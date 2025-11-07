@@ -1,0 +1,65 @@
+# Rule Verifier Configuration
+
+# Paths to look for agent instruction files
+agents_files:
+  - "AGENTS.md"
+  - "CLAUDE.md"
+  - ".claude/AGENTS.md"
+  - "**/AGENTS.md"  # Monorepo support
+  - "**/CLAUDE.md"
+
+# Test Settings
+test:
+  iterations: 5  # Run each scenario N times
+  timeout: 60    # Seconds per test
+  parallel: false  # Run tests in parallel (future)
+
+# Claude CLI Settings
+claude:
+  cli_path: "claude"  # Path to claude CLI
+  print_mode: true  # Use print mode (-p flag)
+  model: "sonnet"  # Default model to use
+
+# Session Management
+session:
+  base_dir: "/tmp/rule-verifier-sessions"
+  cleanup_after_test: true
+  isolation_method: "tmux"
+  tmux_prefix: "rule-verify-"
+
+# Rule Classification
+rules:
+  # Categories of rules to test
+  categories:
+    - command_requirement
+    - command_prohibition
+    - output_format
+    - workflow
+    - code_style
+    - file_structure
+
+  # Priority levels
+  priority_levels:
+    - critical
+    - high
+    - medium
+    - low
+
+# Validation
+validation:
+  strict_mode: false  # Strict vs. fuzzy matching
+  case_sensitive: false
+  min_confidence: 0.7  # Minimum confidence for fuzzy matching
+
+# Reporting
+reporting:
+  formats:
+    - console
+    - json
+    - html
+    - markdown
+  output_dir: "./results"
+  verbose: true
+  show_passing_tests: true
+  show_response_preview: true
+  preview_length: 200
