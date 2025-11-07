@@ -1,0 +1,41 @@
+{
+  "name": "oracle-research-assistant",
+  "version": "1.0.0",
+  "description": "Deep research assistant powered by Claude Agent SDK with voice interaction",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "research": "tsx src/cli.ts"
+  },
+  "keywords": [
+    "claude",
+    "agent",
+    "research",
+    "ai",
+    "tts",
+    "stt"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.1.0",
+    "chalk": "^5.3.0",
+    "ora": "^8.0.1",
+    "boxen": "^8.0.1",
+    "cli-table3": "^0.6.5",
+    "commander": "^12.0.0",
+    "dotenv": "^16.4.5",
+    "node-fetch": "^3.3.2",
+    "openai": "^4.52.0",
+    "marked": "^12.0.2",
+    "marked-terminal": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "tsx": "^4.7.2",
+    "typescript": "^5.4.5"
+  }
+}
