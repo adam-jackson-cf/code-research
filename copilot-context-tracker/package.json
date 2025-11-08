@@ -1,0 +1,96 @@
+{
+  "name": "copilot-context-tracker",
+  "displayName": "Copilot Context Tracker",
+  "description": "Track GitHub Copilot context capacity and Language Model API usage",
+  "version": "0.1.0",
+  "publisher": "your-publisher-name",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning"
+  ],
+  "keywords": [
+    "copilot",
+    "language-model",
+    "context",
+    "tracking",
+    "ai"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "copilot-context-tracker.showDetailedView",
+        "title": "Copilot Context: Show Detailed View",
+        "category": "Copilot Context Tracker"
+      },
+      {
+        "command": "copilot-context-tracker.refreshModels",
+        "title": "Copilot Context: Refresh Models",
+        "category": "Copilot Context Tracker"
+      },
+      {
+        "command": "copilot-context-tracker.clearUsageStats",
+        "title": "Copilot Context: Clear Usage Statistics",
+        "category": "Copilot Context Tracker"
+      }
+    ],
+    "configuration": {
+      "title": "Copilot Context Tracker",
+      "properties": {
+        "copilot-context-tracker.statusBarFormat": {
+          "type": "string",
+          "default": "$(copilot) {modelFamily}: {maxTokens} tokens",
+          "description": "Format string for status bar display. Available placeholders: {modelId}, {modelFamily}, {vendor}, {maxTokens}"
+        },
+        "copilot-context-tracker.showInStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show context information in status bar"
+        },
+        "copilot-context-tracker.autoRefreshInterval": {
+          "type": "number",
+          "default": 60000,
+          "description": "Auto-refresh models interval in milliseconds (0 to disable)"
+        },
+        "copilot-context-tracker.logLevel": {
+          "type": "string",
+          "enum": ["debug", "info", "warn", "error"],
+          "default": "info",
+          "description": "Logging level"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "lint:fix": "eslint src --ext ts --fix",
+    "test": "node ./out/test/runTest.js",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\""
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0",
+    "@types/node": "^20.x",
+    "@types/mocha": "^10.0.6",
+    "@types/glob": "^8.1.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3",
+    "@vscode/test-electron": "^2.3.9",
+    "mocha": "^10.3.0",
+    "glob": "^10.3.10"
+  },
+  "dependencies": {}
+}
