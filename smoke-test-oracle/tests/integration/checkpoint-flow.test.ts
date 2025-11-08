@@ -83,11 +83,11 @@ describe('Checkpoint Flow Integration Tests', () => {
 
       // Verify checkpoint was created
       expect(checkpointRef).toBeDefined();
-      expect(checkpointRef.type).toBe('checkpoint');
-      expect(checkpointRef.metadata?.name).toBe('homepage-initial-load');
-      expect(checkpointRef.metadata?.hasScreenshot).toBe(true);
-      expect(checkpointRef.metadata?.hasDOM).toBe(true);
-      expect(checkpointRef.metadata?.hasConsole).toBe(true);
+      expect(checkpointRef.category).toBe('metadata');
+      expect(checkpointRef.tags?.name).toBe('homepage-initial-load');
+      expect(checkpointRef.tags?.hasScreenshot).toBe('true');
+      expect(checkpointRef.tags?.hasDOM).toBe('true');
+      expect(checkpointRef.tags?.hasConsole).toBe('true');
     });
 
     it('should create checkpoint with minimal data', async () => {
@@ -98,9 +98,9 @@ describe('Checkpoint Flow Integration Tests', () => {
       });
 
       expect(checkpointRef).toBeDefined();
-      expect(checkpointRef.metadata?.hasScreenshot).toBe(false);
-      expect(checkpointRef.metadata?.hasDOM).toBe(true);
-      expect(checkpointRef.metadata?.hasConsole).toBe(false);
+      expect(checkpointRef.tags?.hasScreenshot).toBe('false');
+      expect(checkpointRef.tags?.hasDOM).toBe('true');
+      expect(checkpointRef.tags?.hasConsole).toBe('false');
 
       const loaded = await storageManager.loadCheckpoint(checkpointRef);
       expect(loaded.checkpoint).toBeDefined();
@@ -180,7 +180,7 @@ describe('Checkpoint Flow Integration Tests', () => {
 
       const checkpoints = await storageManager.queryCheckpoints({ url });
       expect(checkpoints.length).toBeGreaterThanOrEqual(2);
-      expect(checkpoints.every(cp => cp.metadata?.url === url)).toBe(true);
+      expect(checkpoints.every(cp => cp.tags?.url === url)).toBe(true);
     });
 
     it('should query checkpoints by tags', async () => {
@@ -237,7 +237,7 @@ describe('Checkpoint Flow Integration Tests', () => {
       });
 
       expect(recentCheckpoints.length).toBeGreaterThanOrEqual(1);
-      expect(recentCheckpoints.every(cp => cp.timestamp >= midTime)).toBe(true);
+      expect(recentCheckpoints.every(cp => new Date(cp.timestamp).getTime() >= midTime)).toBe(true);
     });
 
     it('should filter checkpoints by artifact presence', async () => {
@@ -270,7 +270,7 @@ describe('Checkpoint Flow Integration Tests', () => {
       });
 
       expect(withScreenshots.length).toBeGreaterThanOrEqual(1);
-      expect(withScreenshots.every(cp => cp.metadata?.hasScreenshot)).toBe(true);
+      expect(withScreenshots.every(cp => cp.tags?.hasScreenshot === 'true')).toBe(true);
     });
 
     it('should limit query results', async () => {
@@ -400,7 +400,7 @@ describe('Checkpoint Flow Integration Tests', () => {
       );
 
       expect(clonedRef).toBeDefined();
-      expect(clonedRef.id).not.toBe(originalRef.id);
+      expect(clonedRef.path).not.toBe(originalRef.path);
 
       // Verify both exist
       const original = await storageManager.getCheckpointByName('original-checkpoint');
@@ -408,7 +408,7 @@ describe('Checkpoint Flow Integration Tests', () => {
 
       expect(original).toBeDefined();
       expect(cloned).toBeDefined();
-      expect(original?.id).not.toBe(cloned?.id);
+      expect(original?.path).not.toBe(cloned?.path);
     });
   });
 
@@ -445,7 +445,9 @@ describe('Checkpoint Flow Integration Tests', () => {
       expect(history.length).toBeGreaterThanOrEqual(3);
       // Should be sorted by timestamp descending (newest first)
       for (let i = 0; i < history.length - 1; i++) {
-        expect(history[i].timestamp).toBeGreaterThanOrEqual(history[i + 1].timestamp);
+        expect(new Date(history[i].timestamp).getTime()).toBeGreaterThanOrEqual(
+          new Date(history[i + 1].timestamp).getTime()
+        );
       }
     });
 
@@ -483,7 +485,7 @@ describe('Checkpoint Flow Integration Tests', () => {
 
       // Verify checkpoint is deleted
       const allCheckpoints = await storageManager.queryCheckpoints();
-      const stillExists = allCheckpoints.find(cp => cp.id === checkpointRef.id);
+      const stillExists = allCheckpoints.find(cp => cp.path === checkpointRef.path);
       expect(stillExists).toBeUndefined();
     });
 

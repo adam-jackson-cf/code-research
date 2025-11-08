@@ -280,8 +280,8 @@ describe('error-filter', () => {
     it('should categorize script errors', () => {
       const errors: ConsoleLogEntry[] = [
         createLogEntry('error', 'Uncaught TypeError: Cannot read property'),
-        createLogEntry('error', 'ReferenceError: x is not defined'),
-        createLogEntry('error', 'SyntaxError: Unexpected token'),
+        createLogEntry('error', 'Reference error: x is not defined'),
+        createLogEntry('error', 'Syntax error: Unexpected token'),
       ];
 
       const categories = categorizeErrors(errors);

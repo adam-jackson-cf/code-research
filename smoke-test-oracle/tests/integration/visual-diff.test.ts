@@ -62,8 +62,8 @@ describe('Visual Diff Integration Tests', () => {
         });
 
         expect(ref).toBeDefined();
-        expect(ref.metadata?.width).toBe(800);
-        expect(ref.metadata?.height).toBe(600);
+        expect(ref.tags?.width).toBe('800');
+        expect(ref.tags?.height).toBe('600');
 
         // Retrieve and verify
         const retrieved = await storageManager.retrieveScreenshot(ref);
@@ -614,7 +614,7 @@ describe('Visual Diff Integration Tests', () => {
 
       expect(largeScreenshots.length).toBeGreaterThanOrEqual(2);
       expect(
-        largeScreenshots.every(ref => (ref.metadata?.width || 0) >= 1200)
+        largeScreenshots.every(ref => parseInt(ref.tags?.width || '0', 10) >= 1200)
       ).toBe(true);
     });
 

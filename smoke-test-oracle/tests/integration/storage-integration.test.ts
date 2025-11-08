@@ -52,8 +52,8 @@ describe('Storage Integration Tests', () => {
       });
 
       expect(ref).toBeDefined();
-      expect(ref.id).toMatch(/^dom_/);
-      expect(ref.type).toBe('dom');
+      expect(ref.testId).toBe('test-1');
+      expect(ref.category).toBe('html');
 
       // Retrieve HTML
       const retrieved = await storageManager.retrieveDOM(ref);
@@ -113,10 +113,10 @@ describe('Storage Integration Tests', () => {
       });
 
       expect(ref).toBeDefined();
-      expect(ref.id).toMatch(/^screenshot_/);
-      expect(ref.type).toBe('screenshot');
-      expect(ref.metadata?.width).toBe(800);
-      expect(ref.metadata?.height).toBe(600);
+      expect(ref.testId).toBe('test-1');
+      expect(ref.category).toBe('screenshot');
+      expect(ref.tags?.width).toBe('800');
+      expect(ref.tags?.height).toBe('600');
 
       // Retrieve screenshot
       const retrieved = await storageManager.retrieveScreenshot(ref);
@@ -248,10 +248,10 @@ describe('Storage Integration Tests', () => {
       });
 
       expect(ref).toBeDefined();
-      expect(ref.id).toMatch(/^console_/);
-      expect(ref.metadata?.entryCount).toBe(3);
-      expect(ref.metadata?.errorCount).toBe(1);
-      expect(ref.metadata?.warningCount).toBe(1);
+      expect(ref.testId).toBe('test-1');
+      expect(ref.tags?.entryCount).toBe('3');
+      expect(ref.tags?.errorCount).toBe('1');
+      expect(ref.tags?.warningCount).toBe('1');
 
       // Retrieve console logs
       const retrieved = await storageManager.retrieveConsoleLogs(ref);
@@ -330,7 +330,7 @@ describe('Storage Integration Tests', () => {
       });
 
       expect(ref).toBeDefined();
-      expect(ref.id).toMatch(/^checkpoint_/);
+      expect(ref.category).toBe('metadata');
 
       // Load complete checkpoint
       const loaded = await storageManager.loadCheckpoint(ref);
@@ -378,7 +378,7 @@ describe('Storage Integration Tests', () => {
 
       const ref = await storageManager.getCheckpointByName('unique-checkpoint');
       expect(ref).toBeDefined();
-      expect(ref?.id).toMatch(/^checkpoint_/);
+      expect(ref?.category).toBe('metadata');
     });
   });
 
