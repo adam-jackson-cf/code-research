@@ -17,6 +17,10 @@ build/
 # Output directories
 output/
 research-output/
+test-output/
+
+# Test coverage
+coverage/
 
 # IDE
 .vscode/

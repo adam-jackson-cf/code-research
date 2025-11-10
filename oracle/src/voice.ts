@@ -104,7 +104,7 @@ export class VoiceInterface {
         response_format: 'text'
       });
 
-      const text = typeof transcription === 'string' ? transcription : transcription.text;
+      const text = typeof transcription === 'string' ? transcription : (transcription as any).text;
 
       this.interactions.push({
         type: 'input',

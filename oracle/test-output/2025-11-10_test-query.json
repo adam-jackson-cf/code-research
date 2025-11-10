@@ -1,0 +1,43 @@
+{
+  "topic": "Test Research",
+  "executiveSummary": [
+    "Summary point 1",
+    "Summary point 2"
+  ],
+  "introduction": "Test introduction",
+  "sections": [
+    {
+      "title": "Section 1",
+      "content": "Content 1",
+      "findings": [
+        "Finding 1"
+      ],
+      "citations": [
+        1,
+        2
+      ]
+    }
+  ],
+  "conclusions": "Test conclusions",
+  "sources": [
+    {
+      "id": 1,
+      "url": "https://example.com/1",
+      "title": "Source 1",
+      "credibility": "high",
+      "keyFindings": [
+        "Key finding"
+      ],
+      "quotes": [
+        "Quote"
+      ],
+      "relevanceScore": 0.9
+    }
+  ],
+  "metadata": {
+    "generatedAt": "2025-11-10T12:16:13.498Z",
+    "totalSources": 1,
+    "analysisDepth": "deep",
+    "confidenceLevel": "high"
+  }
+}

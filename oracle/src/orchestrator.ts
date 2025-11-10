@@ -111,7 +111,8 @@ Respond in JSON format with the following structure:
     });
 
     // Parse the JSON response
-    const jsonMatch = result.match(/\{[\s\S]*\}/);
+    const resultString = typeof result === 'string' ? result : String(result);
+    const jsonMatch = resultString.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error('Failed to parse research plan');
     }
@@ -162,7 +163,8 @@ Use the search-specialist agent to perform thorough research. Return results in 
     });
 
     // Parse search results (simplified - in production, would have more robust parsing)
-    return this.parseSearchResults(result, plan.subTopics);
+    const resultString = typeof result === 'string' ? result : String(result);
+    return this.parseSearchResults(resultString, plan.subTopics);
   }
 
   /**
@@ -202,7 +204,8 @@ Use the analysis-expert agent to perform thorough analysis. Return structured JS
       }
     });
 
-    return this.parseAnalysisResults(result);
+    const resultString = typeof result === 'string' ? result : String(result);
+    return this.parseAnalysisResults(resultString);
   }
 
   /**
@@ -252,7 +255,8 @@ Use the synthesis-master agent to create a compelling, coherent report. Return i
       }
     });
 
-    return this.parseSynthesisResults(result, topic, searchResults);
+    const resultString = typeof result === 'string' ? result : String(result);
+    return this.parseSynthesisResults(resultString, topic, searchResults);
   }
 
   /**
