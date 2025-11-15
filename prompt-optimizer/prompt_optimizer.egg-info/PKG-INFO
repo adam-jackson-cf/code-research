@@ -1,0 +1,17 @@
+Metadata-Version: 2.4
+Name: prompt-optimizer
+Version: 0.1.0
+Summary: A prompt optimization system using DSPy and GEPA
+Requires-Python: >=3.10
+Requires-Dist: dspy-ai>=2.5.0
+Requires-Dist: anthropic>=0.45.0
+Requires-Dist: openai>=1.0.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: rich>=13.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.23.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Requires-Dist: black>=24.0.0; extra == "dev"
+Requires-Dist: ruff>=0.6.0; extra == "dev"
+Requires-Dist: mypy>=1.11.0; extra == "dev"
