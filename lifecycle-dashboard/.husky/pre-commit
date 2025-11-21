@@ -1,0 +1,5 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+cd lifecycle-dashboard 2>/dev/null || true
+npx lint-staged
