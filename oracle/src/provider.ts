@@ -88,8 +88,7 @@ export async function isSubscriptionAvailable(): Promise<boolean> {
     const model = claudeCode('haiku');
     await generateText({
       model,
-      prompt: 'Say "ok"',
-      maxTokens: 10
+      prompt: 'Say "ok"'
     });
     return true;
   } catch {

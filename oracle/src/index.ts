@@ -20,14 +20,17 @@ export type {
   Contradiction,
   ReportSection,
   VoiceInteraction,
-  OrchestratorState
+  OrchestratorState,
+  ProviderConfig,
+  QueryOptions,
+  QueryResult
 } from './types.js';
 
 /**
  * Quick start function for easy integration
  */
 export async function research(query: string, options?: {
-  anthropicApiKey: string;
+  anthropicApiKey?: string;
   openaiApiKey?: string;
   scope?: 'narrow' | 'medium' | 'broad';
   depth?: 'shallow' | 'medium' | 'deep';
@@ -35,17 +38,22 @@ export async function research(query: string, options?: {
   outputDir?: string;
   outputFormat?: 'markdown' | 'json' | 'html';
   minSources?: number;
+  /** Provider configuration - defaults to 'api-key' mode */
+  provider?: { mode: 'api-key' | 'subscription' };
 }) {
   const { ResearchOrchestrator } = await import('./orchestrator.js');
 
+  const providerMode = options?.provider?.mode || 'api-key';
+
   const config = {
-    anthropicApiKey: options?.anthropicApiKey || process.env.ANTHROPIC_API_KEY || '',
+    anthropicApiKey: options?.anthropicApiKey || process.env.ANTHROPIC_API_KEY,
     openaiApiKey: options?.openaiApiKey || process.env.OPENAI_API_KEY,
     minSourcesPerTopic: options?.minSources || 10,
     maxSearchDepth: 3,
     enableVoice: options?.useVoice || false,
     outputDir: options?.outputDir || './output',
-    outputFormat: options?.outputFormat || 'markdown' as const
+    outputFormat: options?.outputFormat || 'markdown' as const,
+    provider: { mode: providerMode }
   };
 
   const orchestrator = new ResearchOrchestrator(config);
