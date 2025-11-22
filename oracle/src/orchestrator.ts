@@ -5,7 +5,7 @@
  * and manages the overall research workflow.
  */
 
-import { query, createQueryFunction, getProviderDisplayName } from './provider.js';
+import { query, getProviderDisplayName } from './provider.js';
 import type {
   ResearchConfig,
   ResearchRequest,
