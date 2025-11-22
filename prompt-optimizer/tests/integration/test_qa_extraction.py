@@ -11,10 +11,7 @@ from prompt_optimizer.models import OptimizationRequest, Example
 
 
 @pytest.mark.integration
-@pytest.mark.skipif(
-    not os.getenv("ANTHROPIC_API_KEY"),
-    reason="ANTHROPIC_API_KEY not set"
-)
+@pytest.mark.skipif(not os.getenv("ANTHROPIC_API_KEY"), reason="ANTHROPIC_API_KEY not set")
 class TestQAExtractionIntegration:
     """Integration test for question answering optimization."""
 
@@ -25,22 +22,22 @@ class TestQAExtractionIntegration:
             Example(
                 input="John Smith works at Acme Corp in New York.",
                 output="Person: John Smith, Company: Acme Corp, Location: New York",
-                reasoning="Extract all named entities with their types"
+                reasoning="Extract all named entities with their types",
             ),
             Example(
                 input="The meeting is scheduled for Monday at 3 PM.",
                 output="Day: Monday, Time: 3 PM",
-                reasoning="Extract temporal information"
+                reasoning="Extract temporal information",
             ),
             Example(
                 input="Contact Jane Doe at jane@example.com for more details.",
                 output="Person: Jane Doe, Email: jane@example.com",
-                reasoning="Extract person and contact information"
+                reasoning="Extract person and contact information",
             ),
             Example(
                 input="The product costs $99.99 and ships from California.",
                 output="Price: $99.99, Location: California",
-                reasoning="Extract price and location information"
+                reasoning="Extract price and location information",
             ),
         ]
 
@@ -50,15 +47,12 @@ class TestQAExtractionIntegration:
         return [
             Example(
                 input="Sarah Johnson lives in Seattle and works at Tech Inc.",
-                output="Person: Sarah Johnson, Location: Seattle, Company: Tech Inc"
+                output="Person: Sarah Johnson, Location: Seattle, Company: Tech Inc",
             ),
-            Example(
-                input="The event starts at 6 PM on Friday.",
-                output="Time: 6 PM, Day: Friday"
-            ),
+            Example(input="The event starts at 6 PM on Friday.", output="Time: 6 PM, Day: Friday"),
             Example(
                 input="Email bob@test.com or call 555-1234.",
-                output="Email: bob@test.com, Phone: 555-1234"
+                output="Email: bob@test.com, Phone: 555-1234",
             ),
         ]
 
@@ -91,17 +85,13 @@ class TestQAExtractionIntegration:
 
         # Evaluate
         evaluator = PromptEvaluator()
-        evaluation = evaluator.evaluate(
-            result.optimized_prompt,
-            test_examples,
-            verbose=True
-        )
+        evaluation = evaluator.evaluate(result.optimized_prompt, test_examples, verbose=True)
 
         # For this more complex task, we expect at least 30% accuracy
         # (entity extraction is harder than sentiment classification)
-        assert evaluation.accuracy >= 0.3, (
-            f"Expected accuracy >= 0.3, got {evaluation.accuracy:.2%}"
-        )
+        assert (
+            evaluation.accuracy >= 0.3
+        ), f"Expected accuracy >= 0.3, got {evaluation.accuracy:.2%}"
 
         print(f"\n{'='*60}")
         print("Entity Extraction Results:")
@@ -128,8 +118,8 @@ class TestQAExtractionMocked:
         dspy.settings.configure = MagicMock()
 
         try:
-            with patch('dspy.LM', return_value=mock_lm):
-                with patch('dspy.BootstrapFewShot') as mock_bootstrap:
+            with patch("dspy.LM", return_value=mock_lm):
+                with patch("dspy.BootstrapFewShot") as mock_bootstrap:
                     mock_optimizer = Mock()
                     mock_compiled = Mock()
                     mock_compiled.predictor = Mock()
@@ -148,8 +138,7 @@ class TestQAExtractionMocked:
                         objective="Extract named entities",
                         examples=[
                             Example(
-                                input="John works at Acme",
-                                output="Person: John, Company: Acme"
+                                input="John works at Acme", output="Person: John, Company: Acme"
                             ),
                         ],
                         optimizer_type="bootstrap",

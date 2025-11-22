@@ -18,21 +18,14 @@ class TestExample:
 
     def test_create_example_with_required_fields(self):
         """Test creating an example with required fields."""
-        example = Example(
-            input="What is 2+2?",
-            output="4"
-        )
+        example = Example(input="What is 2+2?", output="4")
         assert example.input == "What is 2+2?"
         assert example.output == "4"
         assert example.reasoning is None
 
     def test_create_example_with_reasoning(self):
         """Test creating an example with optional reasoning."""
-        example = Example(
-            input="What is 2+2?",
-            output="4",
-            reasoning="Simple arithmetic"
-        )
+        example = Example(input="What is 2+2?", output="4", reasoning="Simple arithmetic")
         assert example.reasoning == "Simple arithmetic"
 
     def test_example_requires_input_and_output(self):
@@ -54,7 +47,7 @@ class TestOptimizationRequest:
             examples=[
                 Example(input="I love this!", output="positive"),
                 Example(input="This is terrible", output="negative"),
-            ]
+            ],
         )
         assert request.objective == "Classify sentiment"
         assert len(request.examples) == 2
@@ -66,13 +59,11 @@ class TestOptimizationRequest:
         """Test creating a request with custom values."""
         request = OptimizationRequest(
             objective="Extract entities",
-            examples=[
-                Example(input="John lives in NYC", output="John, NYC")
-            ],
+            examples=[Example(input="John lives in NYC", output="John, NYC")],
             optimizer_type="mipro",
             max_iterations=20,
             num_threads=8,
-            model_name="claude-3-opus-20240229"
+            model_name="claude-3-opus-20240229",
         )
         assert request.optimizer_type == "mipro"
         assert request.max_iterations == 20
@@ -82,10 +73,7 @@ class TestOptimizationRequest:
     def test_request_requires_at_least_one_example(self):
         """Test that OptimizationRequest requires at least one example."""
         with pytest.raises(ValidationError):
-            OptimizationRequest(
-                objective="Test",
-                examples=[]
-            )
+            OptimizationRequest(objective="Test", examples=[])
 
     def test_request_validates_optimizer_type(self):
         """Test that optimizer_type is validated."""
@@ -93,7 +81,7 @@ class TestOptimizationRequest:
             OptimizationRequest(
                 objective="Test",
                 examples=[Example(input="a", output="b")],
-                optimizer_type="invalid"
+                optimizer_type="invalid",
             )
 
     def test_request_validates_max_iterations(self):
@@ -102,14 +90,14 @@ class TestOptimizationRequest:
             OptimizationRequest(
                 objective="Test",
                 examples=[Example(input="a", output="b")],
-                max_iterations=0  # Must be >= 1
+                max_iterations=0,  # Must be >= 1
             )
 
         with pytest.raises(ValidationError):
             OptimizationRequest(
                 objective="Test",
                 examples=[Example(input="a", output="b")],
-                max_iterations=101  # Must be <= 100
+                max_iterations=101,  # Must be <= 100
             )
 
 
@@ -123,7 +111,7 @@ class TestOptimizationResult:
             optimized_prompt="You are a sentiment classifier...",
             final_score=0.85,
             num_iterations=10,
-            optimizer_used="gepa"
+            optimizer_used="gepa",
         )
         assert result.original_objective == "Classify sentiment"
         assert result.final_score == 0.85
@@ -144,7 +132,7 @@ class TestOptimizationResult:
                 {"iteration": 1, "score": 0.5},
                 {"iteration": 2, "score": 0.7},
             ],
-            metrics={"time": 10.5}
+            metrics={"time": 10.5},
         )
         assert len(result.optimization_history) == 2
         assert result.metrics["time"] == 10.5
@@ -156,11 +144,7 @@ class TestEvaluationResult:
     def test_create_evaluation_result(self):
         """Test creating an evaluation result."""
         result = EvaluationResult(
-            prompt="Test prompt",
-            test_cases=10,
-            passed=8,
-            failed=2,
-            accuracy=0.8
+            prompt="Test prompt", test_cases=10, passed=8, failed=2, accuracy=0.8
         )
         assert result.test_cases == 10
         assert result.passed == 8
@@ -171,18 +155,10 @@ class TestEvaluationResult:
         """Test that accuracy is validated to be between 0 and 1."""
         with pytest.raises(ValidationError):
             EvaluationResult(
-                prompt="Test",
-                test_cases=10,
-                passed=8,
-                failed=2,
-                accuracy=1.5  # Invalid: > 1
+                prompt="Test", test_cases=10, passed=8, failed=2, accuracy=1.5  # Invalid: > 1
             )
 
         with pytest.raises(ValidationError):
             EvaluationResult(
-                prompt="Test",
-                test_cases=10,
-                passed=8,
-                failed=2,
-                accuracy=-0.1  # Invalid: < 0
+                prompt="Test", test_cases=10, passed=8, failed=2, accuracy=-0.1  # Invalid: < 0
             )

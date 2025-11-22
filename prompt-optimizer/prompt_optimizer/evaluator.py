@@ -3,7 +3,7 @@ Evaluation utilities for testing optimized prompts.
 """
 
 import dspy
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Optional
 from rich.console import Console
 from rich.table import Table
 
@@ -36,23 +36,18 @@ class PromptEvaluator:
         """Setup the language model for evaluation."""
         try:
             import os
+
             # Set API key if provided
             if self.api_key:
                 os.environ["ANTHROPIC_API_KEY"] = self.api_key
 
-            lm = dspy.LM(
-                model=f"anthropic/{self.model}",
-                max_tokens=4000
-            )
+            lm = dspy.LM(model=f"anthropic/{self.model}", max_tokens=4000)
             dspy.settings.configure(lm=lm)
         except Exception as e:
             console.print(f"[yellow]Warning: Could not setup Anthropic model: {e}[/yellow]")
 
     def evaluate(
-        self,
-        prompt: str,
-        test_cases: List[Example],
-        verbose: bool = True
+        self, prompt: str, test_cases: List[Example], verbose: bool = True
     ) -> EvaluationResult:
         """
         Evaluate a prompt against test cases.
@@ -66,7 +61,7 @@ class PromptEvaluator:
             EvaluationResult with pass/fail statistics
         """
         if verbose:
-            console.print(f"\n[bold cyan]🧪 Evaluating Prompt[/bold cyan]")
+            console.print("\n[bold cyan]🧪 Evaluating Prompt[/bold cyan]")
             console.print(f"[cyan]Test Cases:[/cyan] {len(test_cases)}")
 
         passed = 0
@@ -76,6 +71,7 @@ class PromptEvaluator:
         # Create a simple predictor using the prompt
         class EvalSignature(dspy.Signature):
             """Evaluation signature with custom instructions."""
+
             input: str = dspy.InputField()
             output: str = dspy.OutputField()
 
@@ -99,26 +95,30 @@ class PromptEvaluator:
                     failed += 1
                     status = "❌ FAIL"
 
-                details.append({
-                    "test_case": i + 1,
-                    "input": test_case.input,
-                    "expected": test_case.output,
-                    "predicted": prediction.output,
-                    "passed": is_correct
-                })
+                details.append(
+                    {
+                        "test_case": i + 1,
+                        "input": test_case.input,
+                        "expected": test_case.output,
+                        "predicted": prediction.output,
+                        "passed": is_correct,
+                    }
+                )
 
                 if verbose:
                     console.print(f"{status} Test {i + 1}/{len(test_cases)}")
 
             except Exception as e:
                 failed += 1
-                details.append({
-                    "test_case": i + 1,
-                    "input": test_case.input,
-                    "expected": test_case.output,
-                    "predicted": f"ERROR: {str(e)}",
-                    "passed": False
-                })
+                details.append(
+                    {
+                        "test_case": i + 1,
+                        "input": test_case.input,
+                        "expected": test_case.output,
+                        "predicted": f"ERROR: {str(e)}",
+                        "passed": False,
+                    }
+                )
                 if verbose:
                     console.print(f"❌ FAIL Test {i + 1}/{len(test_cases)} (Error)")
 
@@ -133,7 +133,7 @@ class PromptEvaluator:
             passed=passed,
             failed=failed,
             accuracy=accuracy,
-            details=details
+            details=details,
         )
 
     def _evaluate_output(self, predicted: str, expected: str) -> bool:
@@ -180,10 +180,7 @@ class PromptEvaluator:
         console.print(table)
 
     def compare_prompts(
-        self,
-        prompts: Dict[str, str],
-        test_cases: List[Example],
-        verbose: bool = True
+        self, prompts: Dict[str, str], test_cases: List[Example], verbose: bool = True
     ) -> Dict[str, EvaluationResult]:
         """
         Compare multiple prompts against the same test cases.
@@ -219,19 +216,10 @@ class PromptEvaluator:
         table.add_column("Accuracy", style="yellow")
 
         # Sort by accuracy descending
-        sorted_results = sorted(
-            results.items(),
-            key=lambda x: x[1].accuracy,
-            reverse=True
-        )
+        sorted_results = sorted(results.items(), key=lambda x: x[1].accuracy, reverse=True)
 
         for name, result in sorted_results:
-            table.add_row(
-                name,
-                str(result.passed),
-                str(result.failed),
-                f"{result.accuracy:.2%}"
-            )
+            table.add_row(name, str(result.passed), str(result.failed), f"{result.accuracy:.2%}")
 
         console.print("\n")
         console.print(table)

@@ -49,7 +49,7 @@ class RuleExtractor:
             "keywords": rule_data.get("keywords", []),
             "test_type": self._determine_test_type(rule_data),
             "expected_behavior": self._extract_expected_behavior(rule_data),
-            "negative_rules": self._extract_negative_rules(rule_data)
+            "negative_rules": self._extract_negative_rules(rule_data),
         }
 
         return rule
@@ -62,7 +62,7 @@ class RuleExtractor:
         short_hash = hash_obj.hexdigest()[:8]
 
         # Create readable prefix from section
-        prefix = re.sub(r'[^a-z0-9]', '', section.lower())[:10]
+        prefix = re.sub(r"[^a-z0-9]", "", section.lower())[:10]
 
         return f"{prefix}_{short_hash}"
 
@@ -71,12 +71,7 @@ class RuleExtractor:
         rule_type = rule_data.get("type", "unknown")
 
         # Highly testable rule types
-        testable_types = [
-            "command_requirement",
-            "command_prohibition",
-            "preference",
-            "workflow"
-        ]
+        testable_types = ["command_requirement", "command_prohibition", "preference", "workflow"]
 
         if rule_type in testable_types:
             return True
@@ -118,7 +113,7 @@ class RuleExtractor:
             "should_contain": [],
             "should_not_contain": [],
             "should_execute": [],
-            "should_not_execute": []
+            "should_not_execute": [],
         }
 
         # Extract commands that should be used
@@ -150,7 +145,7 @@ class RuleExtractor:
             r"never\s+([^,\.]+)",
             r"don't\s+([^,\.]+)",
             r"do not\s+([^,\.]+)",
-            r"avoid\s+([^,\.]+)"
+            r"avoid\s+([^,\.]+)",
         ]
 
         for pattern in negative_patterns:
@@ -192,5 +187,5 @@ class RuleExtractor:
             "total_rules": total,
             "testable_rules": testable_count,
             "by_type": by_type,
-            "by_priority": by_priority
+            "by_priority": by_priority,
         }

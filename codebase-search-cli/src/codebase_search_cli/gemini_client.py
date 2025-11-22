@@ -67,7 +67,7 @@ class GeminiSearchClient:
                 }
                 for f in files
             ]
-        except Exception as e:
+        except Exception:
             return []
 
     def upload_file(

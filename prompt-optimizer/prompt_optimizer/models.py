@@ -15,6 +15,7 @@ class Example(BaseModel):
         output: The expected/desired output
         reasoning: Optional explanation of why this is a good example
     """
+
     input: str = Field(..., description="Input text for the example")
     output: str = Field(..., description="Expected/desired output")
     reasoning: Optional[str] = Field(None, description="Why this is a good example")
@@ -32,11 +33,11 @@ class OptimizationRequest(BaseModel):
         max_iterations: Maximum optimization iterations
         num_threads: Number of parallel threads for optimization
     """
+
     objective: str = Field(..., description="Clear description of desired outcome")
     examples: List[Example] = Field(..., min_length=1, description="Examples of good outcomes")
     optimizer_type: Literal["gepa", "mipro", "bootstrap"] = Field(
-        default="gepa",
-        description="DSPy optimizer to use"
+        default="gepa", description="DSPy optimizer to use"
     )
     metric: Optional[str] = Field(None, description="Custom metric function name")
     max_iterations: int = Field(default=10, ge=1, le=100, description="Max optimization iterations")
@@ -56,6 +57,7 @@ class OptimizationResult(BaseModel):
         metrics: Additional metrics collected during optimization
         num_iterations: Number of iterations performed
     """
+
     original_objective: str
     optimized_prompt: str
     optimization_history: List[Dict[str, Any]] = Field(default_factory=list)
@@ -77,6 +79,7 @@ class EvaluationResult(BaseModel):
         accuracy: Accuracy score (0-1)
         details: Detailed results for each test case
     """
+
     prompt: str
     test_cases: int
     passed: int

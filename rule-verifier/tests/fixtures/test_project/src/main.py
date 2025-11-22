@@ -2,7 +2,6 @@
 Main application module.
 """
 
-import os
 from lib.utils import calculate_sum, format_output
 
 

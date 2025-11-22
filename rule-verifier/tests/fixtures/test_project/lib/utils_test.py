@@ -2,7 +2,6 @@
 Tests for utility functions.
 """
 
-import pytest
 from lib.utils import calculate_sum, format_output
 
 

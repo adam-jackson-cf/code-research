@@ -2,8 +2,7 @@
 Unit tests for the PromptOptimizer class.
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 import dspy
 
 from prompt_optimizer.optimizer import PromptOptimizer, TaskModule
@@ -16,10 +15,10 @@ class TestTaskModule:
     def test_task_module_initialization(self):
         """Test that TaskModule initializes correctly."""
         module = TaskModule()
-        assert hasattr(module, 'predictor')
+        assert hasattr(module, "predictor")
         assert isinstance(module.predictor, dspy.ChainOfThought)
 
-    @patch('dspy.ChainOfThought')
+    @patch("dspy.ChainOfThought")
     def test_task_module_forward(self, mock_cot):
         """Test that forward method calls the predictor."""
         mock_prediction = Mock()
@@ -60,9 +59,7 @@ class TestPromptOptimizer:
     def test_create_metric(self):
         """Test metric creation."""
         optimizer = PromptOptimizer()
-        examples = [
-            Example(input="test", output="result")
-        ]
+        examples = [Example(input="test", output="result")]
 
         metric = optimizer._create_metric(examples)
 
@@ -85,9 +82,7 @@ class TestPromptOptimizer:
         mock_module.return_value = Mock(output="result")
 
         # Create mock examples
-        examples = [
-            dspy.Example(input="test", output="result").with_inputs("input")
-        ]
+        examples = [dspy.Example(input="test", output="result").with_inputs("input")]
 
         # Create simple metric
         def metric(gold, pred, trace=None):
@@ -110,7 +105,7 @@ class TestPromptOptimizer:
         optimizer = PromptOptimizer()
         metric = Mock()
 
-        with patch('dspy.GEPA') as mock_gepa:
+        with patch("dspy.GEPA") as mock_gepa:
             mock_gepa.return_value = Mock()
             result = optimizer._get_optimizer("gepa", metric, 4, 10)
             mock_gepa.assert_called_once()
@@ -120,7 +115,7 @@ class TestPromptOptimizer:
         optimizer = PromptOptimizer()
         metric = Mock()
 
-        with patch('dspy.MIPROv2') as mock_mipro:
+        with patch("dspy.MIPROv2") as mock_mipro:
             mock_mipro.return_value = Mock()
             result = optimizer._get_optimizer("mipro", metric, 4, 10)
             mock_mipro.assert_called_once()
@@ -130,7 +125,7 @@ class TestPromptOptimizer:
         optimizer = PromptOptimizer()
         metric = Mock()
 
-        with patch('dspy.BootstrapFewShot') as mock_bootstrap:
+        with patch("dspy.BootstrapFewShot") as mock_bootstrap:
             mock_bootstrap.return_value = Mock()
             result = optimizer._get_optimizer("bootstrap", metric, 4, 10)
             mock_bootstrap.assert_called_once()
@@ -161,8 +156,8 @@ class TestPromptOptimizer:
         prompt = optimizer._extract_prompt(mock_module)
         assert isinstance(prompt, str)
 
-    @patch('prompt_optimizer.optimizer.dspy.LM')
-    @patch('prompt_optimizer.optimizer.dspy.settings')
+    @patch("prompt_optimizer.optimizer.dspy.LM")
+    @patch("prompt_optimizer.optimizer.dspy.settings")
     def test_setup_language_model(self, mock_settings, mock_lm_class):
         """Test language model setup."""
         mock_lm = Mock()
@@ -173,14 +168,13 @@ class TestPromptOptimizer:
         optimizer._setup_language_model("claude-3-opus-20240229")
 
         mock_lm_class.assert_called_once_with(
-            model="anthropic/claude-3-opus-20240229",
-            max_tokens=4000
+            model="anthropic/claude-3-opus-20240229", max_tokens=4000
         )
         mock_settings.configure.assert_called_once_with(lm=mock_lm)
 
-    @patch('prompt_optimizer.optimizer.dspy.LM')
-    @patch('prompt_optimizer.optimizer.dspy.settings')
-    @patch('prompt_optimizer.optimizer.dspy.BootstrapFewShot')
+    @patch("prompt_optimizer.optimizer.dspy.LM")
+    @patch("prompt_optimizer.optimizer.dspy.settings")
+    @patch("prompt_optimizer.optimizer.dspy.BootstrapFewShot")
     def test_optimize_full_flow(self, mock_bootstrap, mock_settings, mock_lm_class):
         """Test the full optimization flow."""
         # Setup mocks
@@ -202,11 +196,11 @@ class TestPromptOptimizer:
                 Example(input="test1", output="result1"),
                 Example(input="test2", output="result2"),
             ],
-            optimizer_type="bootstrap"
+            optimizer_type="bootstrap",
         )
 
         # Mock the evaluation
-        with patch.object(optimizer, '_evaluate_module', return_value=0.85):
+        with patch.object(optimizer, "_evaluate_module", return_value=0.85):
             result = optimizer.optimize(request, verbose=False)
 
         # Verify result

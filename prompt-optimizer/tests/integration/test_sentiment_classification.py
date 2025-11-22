@@ -15,10 +15,7 @@ from prompt_optimizer.models import OptimizationRequest, Example
 
 
 @pytest.mark.integration
-@pytest.mark.skipif(
-    not os.getenv("ANTHROPIC_API_KEY"),
-    reason="ANTHROPIC_API_KEY not set"
-)
+@pytest.mark.skipif(not os.getenv("ANTHROPIC_API_KEY"), reason="ANTHROPIC_API_KEY not set")
 class TestSentimentClassificationIntegration:
     """Integration test for sentiment classification optimization."""
 
@@ -29,32 +26,32 @@ class TestSentimentClassificationIntegration:
             Example(
                 input="I absolutely love this product! It's amazing!",
                 output="positive",
-                reasoning="Enthusiastic positive language with exclamation marks"
+                reasoning="Enthusiastic positive language with exclamation marks",
             ),
             Example(
                 input="This is the worst experience I've ever had.",
                 output="negative",
-                reasoning="Strong negative sentiment with superlative"
+                reasoning="Strong negative sentiment with superlative",
             ),
             Example(
                 input="It's okay, nothing special.",
                 output="neutral",
-                reasoning="Lukewarm response indicating neutrality"
+                reasoning="Lukewarm response indicating neutrality",
             ),
             Example(
                 input="Fantastic service! Would definitely recommend!",
                 output="positive",
-                reasoning="Positive endorsement with recommendation"
+                reasoning="Positive endorsement with recommendation",
             ),
             Example(
                 input="Terrible quality. Do not buy.",
                 output="negative",
-                reasoning="Warning against purchase indicates strong negative"
+                reasoning="Warning against purchase indicates strong negative",
             ),
             Example(
                 input="It works as described.",
                 output="neutral",
-                reasoning="Factual statement without emotional tone"
+                reasoning="Factual statement without emotional tone",
             ),
         ]
 
@@ -62,45 +59,17 @@ class TestSentimentClassificationIntegration:
     def test_examples(self):
         """Held-out test examples for evaluation."""
         return [
-            Example(
-                input="This exceeded all my expectations!",
-                output="positive"
-            ),
-            Example(
-                input="Completely disappointed with this purchase.",
-                output="negative"
-            ),
-            Example(
-                input="It's fine, does what it needs to do.",
-                output="neutral"
-            ),
-            Example(
-                input="Outstanding! Best decision ever!",
-                output="positive"
-            ),
-            Example(
-                input="Waste of money and time.",
-                output="negative"
-            ),
-            Example(
-                input="Average product, nothing noteworthy.",
-                output="neutral"
-            ),
-            Example(
-                input="Highly recommend this to everyone!",
-                output="positive"
-            ),
-            Example(
-                input="Avoid at all costs.",
-                output="negative"
-            ),
+            Example(input="This exceeded all my expectations!", output="positive"),
+            Example(input="Completely disappointed with this purchase.", output="negative"),
+            Example(input="It's fine, does what it needs to do.", output="neutral"),
+            Example(input="Outstanding! Best decision ever!", output="positive"),
+            Example(input="Waste of money and time.", output="negative"),
+            Example(input="Average product, nothing noteworthy.", output="neutral"),
+            Example(input="Highly recommend this to everyone!", output="positive"),
+            Example(input="Avoid at all costs.", output="negative"),
         ]
 
-    def test_optimize_and_evaluate_sentiment_classifier(
-        self,
-        training_examples,
-        test_examples
-    ):
+    def test_optimize_and_evaluate_sentiment_classifier(self, training_examples, test_examples):
         """
         Test the full optimization and evaluation pipeline.
 
@@ -135,17 +104,13 @@ class TestSentimentClassificationIntegration:
 
         # Evaluate on held-out test set
         evaluator = PromptEvaluator()
-        evaluation = evaluator.evaluate(
-            result.optimized_prompt,
-            test_examples,
-            verbose=True
-        )
+        evaluation = evaluator.evaluate(result.optimized_prompt, test_examples, verbose=True)
 
         # Assert performance thresholds
         # We expect at least 50% accuracy (better than random for 3 classes)
-        assert evaluation.accuracy >= 0.5, (
-            f"Expected accuracy >= 0.5, got {evaluation.accuracy:.2%}"
-        )
+        assert (
+            evaluation.accuracy >= 0.5
+        ), f"Expected accuracy >= 0.5, got {evaluation.accuracy:.2%}"
 
         # Verify evaluation details
         assert evaluation.test_cases == len(test_examples)
@@ -154,11 +119,11 @@ class TestSentimentClassificationIntegration:
 
         # Print summary
         print(f"\n{'='*60}")
-        print(f"Optimization Summary:")
+        print("Optimization Summary:")
         print(f"  Optimizer: {result.optimizer_used}")
         print(f"  Iterations: {result.num_iterations}")
         print(f"  Training Score: {result.final_score:.2%}")
-        print(f"\nEvaluation Summary:")
+        print("\nEvaluation Summary:")
         print(f"  Test Cases: {evaluation.test_cases}")
         print(f"  Passed: {evaluation.passed}")
         print(f"  Failed: {evaluation.failed}")
@@ -188,9 +153,7 @@ class TestSentimentClassificationIntegration:
 
         result_bootstrap = optimizer.optimize(request_bootstrap, verbose=False)
         eval_bootstrap = evaluator.evaluate(
-            result_bootstrap.optimized_prompt,
-            test_examples,
-            verbose=False
+            result_bootstrap.optimized_prompt, test_examples, verbose=False
         )
         results["bootstrap"] = eval_bootstrap
 
@@ -231,8 +194,8 @@ class TestSentimentClassificationMocked:
         dspy.settings.configure = MagicMock()
 
         try:
-            with patch('dspy.LM', return_value=mock_lm):
-                with patch('dspy.BootstrapFewShot') as mock_bootstrap:
+            with patch("dspy.LM", return_value=mock_lm):
+                with patch("dspy.BootstrapFewShot") as mock_bootstrap:
                     # Setup mock optimizer
                     mock_optimizer = Mock()
                     mock_compiled = Mock()
@@ -242,9 +205,9 @@ class TestSentimentClassificationMocked:
                     def mock_forward(input):
                         # Simple rule-based mock
                         input_lower = input.lower()
-                        if any(word in input_lower for word in ['love', 'great', 'amazing']):
+                        if any(word in input_lower for word in ["love", "great", "amazing"]):
                             return Mock(output="positive")
-                        elif any(word in input_lower for word in ['hate', 'worst', 'terrible']):
+                        elif any(word in input_lower for word in ["hate", "worst", "terrible"]):
                             return Mock(output="negative")
                         else:
                             return Mock(output="neutral")

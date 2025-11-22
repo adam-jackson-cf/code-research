@@ -1,13 +1,11 @@
 """Main CLI application using Typer."""
 
-import sys
 from pathlib import Path
 from typing import List, Optional
 
 import typer
 from rich.console import Console
 from rich.panel import Panel
-from rich.syntax import Syntax
 from rich.table import Table
 
 from .config import Config
@@ -27,9 +25,7 @@ def get_config() -> Config:
         return Config.load_from_env()
     except Exception as e:
         console.print(f"[red]Error loading configuration: {e}[/red]")
-        console.print(
-            "[yellow]Make sure you have a .env file with GOOGLE_API_KEY set.[/yellow]"
-        )
+        console.print("[yellow]Make sure you have a .env file with GOOGLE_API_KEY set.[/yellow]")
         raise typer.Exit(1)
 
 
@@ -48,9 +44,7 @@ def init(
     config = get_config()
 
     if config.file_search_store_id and not force:
-        console.print(
-            f"[yellow]Store already exists: {config.file_search_store_name}[/yellow]"
-        )
+        console.print(f"[yellow]Store already exists: {config.file_search_store_name}[/yellow]")
         console.print("[yellow]Use --force to recreate.[/yellow]")
         raise typer.Exit(0)
 
@@ -59,7 +53,7 @@ def init(
 
         # Delete old store if force is enabled
         if force and config.file_search_store_name:
-            console.print(f"[yellow]Deleting existing store...[/yellow]")
+            console.print("[yellow]Deleting existing store...[/yellow]")
             try:
                 client.delete_store(config.file_search_store_name)
             except Exception:
@@ -70,13 +64,15 @@ def init(
 
         config.save_store_info(store_id, store_name)
 
-        console.print(Panel(
-            f"[green]Store created successfully![/green]\n\n"
-            f"Store ID: {store_id}\n"
-            f"Store Name: {store_name}",
-            title="Success",
-            border_style="green",
-        ))
+        console.print(
+            Panel(
+                f"[green]Store created successfully![/green]\n\n"
+                f"Store ID: {store_id}\n"
+                f"Store Name: {store_name}",
+                title="Success",
+                border_style="green",
+            )
+        )
 
     except Exception as e:
         console.print(f"[red]Error creating store: {e}[/red]")
@@ -146,7 +142,15 @@ def index(
                 ]
 
             # Default exclude patterns
-            default_exclude = {".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build"}
+            default_exclude = {
+                ".git",
+                "node_modules",
+                "__pycache__",
+                ".venv",
+                "venv",
+                "dist",
+                "build",
+            }
             if exclude:
                 default_exclude.update(exclude)
 
@@ -197,13 +201,15 @@ def index(
                     console.print(f"[red]Failed to index {file_path}: {e}[/red]")
                     failed += 1
 
-        console.print(Panel(
-            f"[green]Indexing complete![/green]\n\n"
-            f"Successfully indexed: {uploaded}\n"
-            f"Failed: {failed}",
-            title="Summary",
-            border_style="green",
-        ))
+        console.print(
+            Panel(
+                f"[green]Indexing complete![/green]\n\n"
+                f"Successfully indexed: {uploaded}\n"
+                f"Failed: {failed}",
+                title="Summary",
+                border_style="green",
+            )
+        )
 
     except Exception as e:
         console.print(f"[red]Error during indexing: {e}[/red]")
@@ -249,11 +255,13 @@ def search(
 
         # Display results
         if result["text"]:
-            console.print(Panel(
-                result["text"],
-                title="Search Result",
-                border_style="blue",
-            ))
+            console.print(
+                Panel(
+                    result["text"],
+                    title="Search Result",
+                    border_style="blue",
+                )
+            )
         else:
             console.print("[yellow]No results found.[/yellow]")
 
@@ -336,9 +344,7 @@ Max Overlap Tokens: {config.max_overlap_tokens}
 
 @app.command()
 def clear(
-    confirm: bool = typer.Option(
-        False, "--yes", "-y", help="Skip confirmation prompt"
-    ),
+    confirm: bool = typer.Option(False, "--yes", "-y", help="Skip confirmation prompt"),
 ) -> None:
     """Delete the current file search store."""
     config = get_config()
@@ -365,9 +371,7 @@ def clear(
             lines = []
             with open(env_path, "r") as f:
                 lines = [
-                    line
-                    for line in f.readlines()
-                    if not line.startswith("FILE_SEARCH_STORE_")
+                    line for line in f.readlines() if not line.startswith("FILE_SEARCH_STORE_")
                 ]
             with open(env_path, "w") as f:
                 f.writelines(lines)

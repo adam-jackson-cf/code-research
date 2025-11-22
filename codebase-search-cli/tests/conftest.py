@@ -1,6 +1,5 @@
 """Pytest configuration and fixtures."""
 
-import os
 import tempfile
 from pathlib import Path
 from typing import Generator
@@ -79,7 +78,9 @@ def mock_genai_client(mocker: Mock) -> Mock:
 
 
 @pytest.fixture
-def mock_gemini_client(mock_config: Config, mock_genai_client: Mock, mocker: Mock) -> GeminiSearchClient:
+def mock_gemini_client(
+    mock_config: Config, mock_genai_client: Mock, mocker: Mock
+) -> GeminiSearchClient:
     """Create a mock Gemini search client."""
     mocker.patch("codebase_search_cli.gemini_client.genai.Client", return_value=mock_genai_client)
     return GeminiSearchClient(mock_config)

@@ -2,7 +2,6 @@
 Unit tests for the PromptEvaluator class.
 """
 
-import pytest
 from unittest.mock import Mock, patch
 
 from prompt_optimizer.evaluator import PromptEvaluator
@@ -14,14 +13,14 @@ class TestPromptEvaluator:
 
     def test_evaluator_initialization(self):
         """Test that PromptEvaluator initializes correctly."""
-        with patch.object(PromptEvaluator, '_setup_lm'):
+        with patch.object(PromptEvaluator, "_setup_lm"):
             evaluator = PromptEvaluator(api_key="test_key", model="claude-3-opus-20240229")
             assert evaluator.api_key == "test_key"
             assert evaluator.model == "claude-3-opus-20240229"
 
     def test_evaluate_output_exact_match(self):
         """Test output evaluation with exact match."""
-        with patch.object(PromptEvaluator, '_setup_lm'):
+        with patch.object(PromptEvaluator, "_setup_lm"):
             evaluator = PromptEvaluator()
 
             # Exact match
@@ -32,7 +31,7 @@ class TestPromptEvaluator:
 
     def test_evaluate_output_substring_match(self):
         """Test output evaluation with substring match."""
-        with patch.object(PromptEvaluator, '_setup_lm'):
+        with patch.object(PromptEvaluator, "_setup_lm"):
             evaluator = PromptEvaluator()
 
             # Substring in predicted
@@ -43,7 +42,7 @@ class TestPromptEvaluator:
 
     def test_evaluate_output_keyword_overlap(self):
         """Test output evaluation with keyword overlap."""
-        with patch.object(PromptEvaluator, '_setup_lm'):
+        with patch.object(PromptEvaluator, "_setup_lm"):
             evaluator = PromptEvaluator()
 
             # High keyword overlap (>70%)
@@ -54,7 +53,7 @@ class TestPromptEvaluator:
 
     def test_evaluate_output_no_match(self):
         """Test output evaluation with no match."""
-        with patch.object(PromptEvaluator, '_setup_lm'):
+        with patch.object(PromptEvaluator, "_setup_lm"):
             evaluator = PromptEvaluator()
 
             # No overlap
@@ -65,7 +64,7 @@ class TestPromptEvaluator:
 
     def test_evaluate_output_empty_strings(self):
         """Test output evaluation with empty strings."""
-        with patch.object(PromptEvaluator, '_setup_lm'):
+        with patch.object(PromptEvaluator, "_setup_lm"):
             evaluator = PromptEvaluator()
 
             # Both empty
@@ -75,7 +74,7 @@ class TestPromptEvaluator:
             assert evaluator._evaluate_output("", "test") is False
             assert evaluator._evaluate_output("test", "") is False
 
-    @patch('prompt_optimizer.evaluator.dspy.Predict')
+    @patch("prompt_optimizer.evaluator.dspy.Predict")
     def test_evaluate_single_test_case(self, mock_predict):
         """Test evaluating a single test case."""
         # Setup mock predictor
@@ -85,12 +84,10 @@ class TestPromptEvaluator:
         mock_predictor.return_value = mock_prediction
         mock_predict.return_value = mock_predictor
 
-        with patch.object(PromptEvaluator, '_setup_lm'):
+        with patch.object(PromptEvaluator, "_setup_lm"):
             evaluator = PromptEvaluator()
 
-            test_cases = [
-                Example(input="I love this!", output="positive")
-            ]
+            test_cases = [Example(input="I love this!", output="positive")]
 
             result = evaluator.evaluate("Test prompt", test_cases, verbose=False)
 
@@ -100,7 +97,7 @@ class TestPromptEvaluator:
             assert result.accuracy == 1.0
             assert len(result.details) == 1
 
-    @patch('prompt_optimizer.evaluator.dspy.Predict')
+    @patch("prompt_optimizer.evaluator.dspy.Predict")
     def test_evaluate_multiple_test_cases(self, mock_predict):
         """Test evaluating multiple test cases."""
         # Setup mock predictor with different responses
@@ -113,7 +110,7 @@ class TestPromptEvaluator:
         mock_predictor.side_effect = predictions
         mock_predict.return_value = mock_predictor
 
-        with patch.object(PromptEvaluator, '_setup_lm'):
+        with patch.object(PromptEvaluator, "_setup_lm"):
             evaluator = PromptEvaluator()
 
             test_cases = [
@@ -129,7 +126,7 @@ class TestPromptEvaluator:
             assert result.failed == 0
             assert result.accuracy == 1.0
 
-    @patch('prompt_optimizer.evaluator.dspy.Predict')
+    @patch("prompt_optimizer.evaluator.dspy.Predict")
     def test_evaluate_with_failures(self, mock_predict):
         """Test evaluation with some failures."""
         mock_predictor = Mock()
@@ -140,7 +137,7 @@ class TestPromptEvaluator:
         mock_predictor.side_effect = predictions
         mock_predict.return_value = mock_predictor
 
-        with patch.object(PromptEvaluator, '_setup_lm'):
+        with patch.object(PromptEvaluator, "_setup_lm"):
             evaluator = PromptEvaluator()
 
             test_cases = [
@@ -155,19 +152,17 @@ class TestPromptEvaluator:
             assert result.failed == 1
             assert result.accuracy == 0.5
 
-    @patch('prompt_optimizer.evaluator.dspy.Predict')
+    @patch("prompt_optimizer.evaluator.dspy.Predict")
     def test_evaluate_with_error(self, mock_predict):
         """Test evaluation when prediction raises an error."""
         mock_predictor = Mock()
         mock_predictor.side_effect = Exception("Prediction failed")
         mock_predict.return_value = mock_predictor
 
-        with patch.object(PromptEvaluator, '_setup_lm'):
+        with patch.object(PromptEvaluator, "_setup_lm"):
             evaluator = PromptEvaluator()
 
-            test_cases = [
-                Example(input="test", output="result")
-            ]
+            test_cases = [Example(input="test", output="result")]
 
             result = evaluator.evaluate("Test prompt", test_cases, verbose=False)
 
@@ -177,7 +172,7 @@ class TestPromptEvaluator:
             assert result.accuracy == 0.0
             assert "ERROR" in result.details[0]["predicted"]
 
-    @patch('prompt_optimizer.evaluator.dspy.Predict')
+    @patch("prompt_optimizer.evaluator.dspy.Predict")
     def test_compare_prompts(self, mock_predict):
         """Test comparing multiple prompts."""
         # Setup mock predictor
@@ -186,7 +181,7 @@ class TestPromptEvaluator:
         mock_predictor.return_value = mock_prediction
         mock_predict.return_value = mock_predictor
 
-        with patch.object(PromptEvaluator, '_setup_lm'):
+        with patch.object(PromptEvaluator, "_setup_lm"):
             evaluator = PromptEvaluator()
 
             prompts = {
@@ -194,9 +189,7 @@ class TestPromptEvaluator:
                 "prompt2": "Second prompt",
             }
 
-            test_cases = [
-                Example(input="test", output="positive")
-            ]
+            test_cases = [Example(input="test", output="positive")]
 
             results = evaluator.compare_prompts(prompts, test_cases, verbose=False)
 
@@ -205,10 +198,10 @@ class TestPromptEvaluator:
             assert "prompt2" in results
             assert all(r.test_cases == 1 for r in results.values())
 
-    @patch('prompt_optimizer.evaluator.dspy.Predict')
+    @patch("prompt_optimizer.evaluator.dspy.Predict")
     def test_evaluate_empty_test_cases(self, mock_predict):
         """Test evaluation with empty test cases."""
-        with patch.object(PromptEvaluator, '_setup_lm'):
+        with patch.object(PromptEvaluator, "_setup_lm"):
             evaluator = PromptEvaluator()
 
             result = evaluator.evaluate("Test prompt", [], verbose=False)

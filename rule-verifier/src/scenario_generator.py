@@ -63,11 +63,8 @@ class ScenarioGenerator:
                     "type": "positive",
                     "test_type": "command_requirement",
                     "prompt": self._create_command_request_prompt(command, rule),
-                    "expected_behavior": {
-                        "should_contain": [command],
-                        "should_not_contain": []
-                    },
-                    "rule": rule
+                    "expected_behavior": {"should_contain": [command], "should_not_contain": []},
+                    "rule": rule,
                 }
                 scenarios.append(scenario)
 
@@ -80,11 +77,8 @@ class ScenarioGenerator:
                     "type": "negative",
                     "test_type": "command_prohibition",
                     "prompt": self._create_command_prohibition_prompt(command, rule),
-                    "expected_behavior": {
-                        "should_contain": [],
-                        "should_not_contain": [command]
-                    },
-                    "rule": rule
+                    "expected_behavior": {"should_contain": [], "should_not_contain": [command]},
+                    "rule": rule,
                 }
                 scenarios.append(scenario)
 
@@ -103,11 +97,8 @@ class ScenarioGenerator:
                 "type": "preference",
                 "test_type": "preference_check",
                 "prompt": self._create_preference_prompt(rule),
-                "expected_behavior": {
-                    "should_contain": commands,
-                    "should_not_contain": []
-                },
-                "rule": rule
+                "expected_behavior": {"should_contain": commands, "should_not_contain": []},
+                "rule": rule,
             }
             scenarios.append(scenario)
 
@@ -124,7 +115,7 @@ class ScenarioGenerator:
             "test_type": "workflow_check",
             "prompt": self._create_workflow_prompt(rule),
             "expected_behavior": rule.get("expected_behavior", {}),
-            "rule": rule
+            "rule": rule,
         }
         scenarios.append(scenario)
 
@@ -141,7 +132,7 @@ class ScenarioGenerator:
             "test_type": "general_check",
             "prompt": self._create_general_prompt(rule),
             "expected_behavior": rule.get("expected_behavior", {}),
-            "rule": rule
+            "rule": rule,
         }
         scenarios.append(scenario)
 
@@ -188,7 +179,7 @@ class ScenarioGenerator:
                 return "I need to add a new package. What's the best way to do that?"
 
         # Generic fallback
-        action = self._extract_action(rule['description'])
+        action = self._extract_action(rule["description"])
         return f"I want to {action}. What command should I use?"
 
     def _create_preference_prompt(self, rule: Dict) -> str:
@@ -197,7 +188,9 @@ class ScenarioGenerator:
         commands = rule.get("commands", [])
 
         # Extract what the preference is about
-        if "package manager" in description.lower() or any(pm in str(commands) for pm in ["npm", "yarn", "pnpm"]):
+        if "package manager" in description.lower() or any(
+            pm in str(commands) for pm in ["npm", "yarn", "pnpm"]
+        ):
             return "I need to install a new package. Which package manager should I use?"
 
         if "typescript" in description.lower() or ".tsx" in description or ".ts" in description:
@@ -269,8 +262,4 @@ class ScenarioGenerator:
             test_type = scenario.get("test_type", "unknown")
             by_test_type[test_type] = by_test_type.get(test_type, 0) + 1
 
-        return {
-            "total_scenarios": total,
-            "by_type": by_type,
-            "by_test_type": by_test_type
-        }
+        return {"total_scenarios": total, "by_type": by_type, "by_test_type": by_test_type}

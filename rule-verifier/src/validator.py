@@ -3,7 +3,7 @@ Validator - Validate Claude's responses against expected behavior.
 """
 
 import re
-from typing import Dict, List, Optional
+from typing import Dict, List
 from difflib import SequenceMatcher
 
 
@@ -12,9 +12,15 @@ class ResponseValidator:
 
     def __init__(self, config: Dict = None):
         self.config = config or {}
-        self.strict_mode = config.get("validation", {}).get("strict_mode", False) if config else False
-        self.case_sensitive = config.get("validation", {}).get("case_sensitive", False) if config else False
-        self.min_confidence = config.get("validation", {}).get("min_confidence", 0.7) if config else 0.7
+        self.strict_mode = (
+            config.get("validation", {}).get("strict_mode", False) if config else False
+        )
+        self.case_sensitive = (
+            config.get("validation", {}).get("case_sensitive", False) if config else False
+        )
+        self.min_confidence = (
+            config.get("validation", {}).get("min_confidence", 0.7) if config else 0.7
+        )
 
     def validate_result(self, result: Dict, scenario: Dict) -> Dict:
         """
@@ -32,7 +38,7 @@ class ResponseValidator:
                 "passed": False,
                 "reason": "Test execution failed",
                 "error": result.get("error"),
-                "checks": []
+                "checks": [],
             }
 
         response = result.get("response", "")
@@ -43,46 +49,54 @@ class ResponseValidator:
         # Check should_contain
         for item in expected.get("should_contain", []):
             check_result = self._check_contains(response, item)
-            checks.append({
-                "type": "should_contain",
-                "target": item,
-                "passed": check_result["found"],
-                "confidence": check_result.get("confidence", 1.0),
-                "details": check_result.get("details", "")
-            })
+            checks.append(
+                {
+                    "type": "should_contain",
+                    "target": item,
+                    "passed": check_result["found"],
+                    "confidence": check_result.get("confidence", 1.0),
+                    "details": check_result.get("details", ""),
+                }
+            )
 
         # Check should_not_contain
         for item in expected.get("should_not_contain", []):
             check_result = self._check_not_contains(response, item)
-            checks.append({
-                "type": "should_not_contain",
-                "target": item,
-                "passed": check_result["not_found"],
-                "confidence": check_result.get("confidence", 1.0),
-                "details": check_result.get("details", "")
-            })
+            checks.append(
+                {
+                    "type": "should_not_contain",
+                    "target": item,
+                    "passed": check_result["not_found"],
+                    "confidence": check_result.get("confidence", 1.0),
+                    "details": check_result.get("details", ""),
+                }
+            )
 
         # Check should_execute (commands mentioned/recommended)
         for cmd in expected.get("should_execute", []):
             check_result = self._check_command_mentioned(response, cmd)
-            checks.append({
-                "type": "should_execute",
-                "target": cmd,
-                "passed": check_result["found"],
-                "confidence": check_result.get("confidence", 1.0),
-                "details": check_result.get("details", "")
-            })
+            checks.append(
+                {
+                    "type": "should_execute",
+                    "target": cmd,
+                    "passed": check_result["found"],
+                    "confidence": check_result.get("confidence", 1.0),
+                    "details": check_result.get("details", ""),
+                }
+            )
 
         # Check should_not_execute (commands not mentioned/discouraged)
         for cmd in expected.get("should_not_execute", []):
             check_result = self._check_command_not_mentioned(response, cmd)
-            checks.append({
-                "type": "should_not_execute",
-                "target": cmd,
-                "passed": check_result["not_found"],
-                "confidence": check_result.get("confidence", 1.0),
-                "details": check_result.get("details", "")
-            })
+            checks.append(
+                {
+                    "type": "should_not_execute",
+                    "target": cmd,
+                    "passed": check_result["not_found"],
+                    "confidence": check_result.get("confidence", 1.0),
+                    "details": check_result.get("details", ""),
+                }
+            )
 
         # Determine overall pass/fail
         all_passed = all(check["passed"] for check in checks)
@@ -97,7 +111,7 @@ class ResponseValidator:
             "checks": checks,
             "checks_passed": sum(1 for c in checks if c["passed"]),
             "checks_failed": sum(1 for c in checks if not c["passed"]),
-            "total_checks": len(checks)
+            "total_checks": len(checks),
         }
 
     def _check_contains(self, response: str, target: str) -> Dict:
@@ -111,18 +125,14 @@ class ResponseValidator:
             return {
                 "found": found,
                 "confidence": 1.0 if found else 0.0,
-                "details": "Exact match" if found else "Not found"
+                "details": "Exact match" if found else "Not found",
             }
         else:
             # Fuzzy match
             found = target_text in response_text
 
             if found:
-                return {
-                    "found": True,
-                    "confidence": 1.0,
-                    "details": "Exact match"
-                }
+                return {"found": True, "confidence": 1.0, "details": "Exact match"}
 
             # Try fuzzy matching
             confidence = self._fuzzy_match(target_text, response_text)
@@ -131,13 +141,13 @@ class ResponseValidator:
                 return {
                     "found": True,
                     "confidence": confidence,
-                    "details": f"Fuzzy match (confidence: {confidence:.2f})"
+                    "details": f"Fuzzy match (confidence: {confidence:.2f})",
                 }
 
             return {
                 "found": False,
                 "confidence": confidence,
-                "details": f"Not found (best match confidence: {confidence:.2f})"
+                "details": f"Not found (best match confidence: {confidence:.2f})",
             }
 
     def _check_not_contains(self, response: str, target: str) -> Dict:
@@ -151,19 +161,15 @@ class ResponseValidator:
             return {
                 "not_found": False,
                 "confidence": 0.0,
-                "details": f"Found '{target}' but it should not be present"
+                "details": f"Found '{target}' but it should not be present",
             }
 
-        return {
-            "not_found": True,
-            "confidence": 1.0,
-            "details": "Correctly not present"
-        }
+        return {"not_found": True, "confidence": 1.0, "details": "Correctly not present"}
 
     def _check_command_mentioned(self, response: str, command: str) -> Dict:
         """Check if a command is mentioned or recommended in the response."""
         # Look for the command in code blocks or inline code
-        code_pattern = r'`([^`]+)`'
+        code_pattern = r"`([^`]+)`"
         code_blocks = re.findall(code_pattern, response)
 
         command_base = command.split()[0] if command else ""
@@ -173,7 +179,7 @@ class ResponseValidator:
                 return {
                     "found": True,
                     "confidence": 1.0,
-                    "details": f"Command found in code: `{code}`"
+                    "details": f"Command found in code: `{code}`",
                 }
 
         # Check in plain text
@@ -181,11 +187,7 @@ class ResponseValidator:
         command_lower = command.lower()
 
         if command_lower in response_lower:
-            return {
-                "found": True,
-                "confidence": 0.9,
-                "details": "Command mentioned in text"
-            }
+            return {"found": True, "confidence": 0.9, "details": "Command mentioned in text"}
 
         # Try to find command components
         command_parts = command_lower.split()
@@ -196,14 +198,10 @@ class ResponseValidator:
             return {
                 "found": True,
                 "confidence": confidence,
-                "details": f"Command components found ({parts_found}/{len(command_parts)})"
+                "details": f"Command components found ({parts_found}/{len(command_parts)})",
             }
 
-        return {
-            "found": False,
-            "confidence": 0.0,
-            "details": "Command not mentioned"
-        }
+        return {"found": False, "confidence": 0.0, "details": "Command not mentioned"}
 
     def _check_command_not_mentioned(self, response: str, command: str) -> Dict:
         """Check if a command is NOT mentioned in the response."""
@@ -213,14 +211,10 @@ class ResponseValidator:
             return {
                 "not_found": False,
                 "confidence": 0.0,
-                "details": f"Command should not be mentioned but was found: {result['details']}"
+                "details": f"Command should not be mentioned but was found: {result['details']}",
             }
 
-        return {
-            "not_found": True,
-            "confidence": 1.0,
-            "details": "Correctly not mentioned"
-        }
+        return {"not_found": True, "confidence": 1.0, "details": "Correctly not mentioned"}
 
     def _fuzzy_match(self, target: str, text: str) -> float:
         """
@@ -233,7 +227,7 @@ class ResponseValidator:
 
         # Try to find best matching substring
         for i in range(len(text) - target_len + 1):
-            substring = text[i:i + target_len]
+            substring = text[i : i + target_len]
             ratio = SequenceMatcher(None, target, substring).ratio()
             best_ratio = max(best_ratio, ratio)
 
@@ -265,22 +259,20 @@ class ResponseValidator:
             scenario = scenario_map.get(scenario_id)
 
             if not scenario:
-                validations.append({
-                    "result": result,
-                    "validation": {
-                        "passed": False,
-                        "reason": "Scenario not found",
-                        "checks": []
+                validations.append(
+                    {
+                        "result": result,
+                        "validation": {
+                            "passed": False,
+                            "reason": "Scenario not found",
+                            "checks": [],
+                        },
                     }
-                })
+                )
                 continue
 
             validation = self.validate_result(result, scenario)
-            validations.append({
-                "result": result,
-                "scenario": scenario,
-                "validation": validation
-            })
+            validations.append({"result": result, "scenario": scenario, "validation": validation})
 
         return validations
 
@@ -330,7 +322,7 @@ class ConsistencyAnalyzer:
                 "failed": total_count - passed_count,
                 "consistency_rate": consistency_rate,
                 "is_consistent": consistency_rate >= 0.8,  # 80% threshold
-                "iterations": scenario_validations
+                "iterations": scenario_validations,
             }
 
         return consistency_results

@@ -34,7 +34,7 @@ def load_config(config_path: str) -> dict:
         print(f"{Fore.YELLOW}Using default configuration{Style.RESET_ALL}\n")
         return {}
 
-    with open(config_file, 'r') as f:
+    with open(config_file, "r") as f:
         return yaml.safe_load(f)
 
 
@@ -62,68 +62,54 @@ Examples:
 
   # Generate only JSON report
   python run_verifier.py examples/example_AGENTS.md --format json
-        """
+        """,
+    )
+
+    parser.add_argument("file", help="Path to AGENTS.md or CLAUDE.md file")
+
+    parser.add_argument(
+        "--config", default="config.yaml", help="Path to config file (default: config.yaml)"
     )
 
     parser.add_argument(
-        "file",
-        help="Path to AGENTS.md or CLAUDE.md file"
+        "--iterations", type=int, help="Number of test iterations per scenario (overrides config)"
     )
 
-    parser.add_argument(
-        "--config",
-        default="config.yaml",
-        help="Path to config file (default: config.yaml)"
-    )
-
-    parser.add_argument(
-        "--iterations",
-        type=int,
-        help="Number of test iterations per scenario (overrides config)"
-    )
-
-    parser.add_argument(
-        "--output",
-        help="Output directory for reports (overrides config)"
-    )
+    parser.add_argument("--output", help="Output directory for reports (overrides config)")
 
     parser.add_argument(
         "--format",
         nargs="+",
         choices=["console", "json", "html", "markdown"],
-        help="Report formats to generate (overrides config)"
+        help="Report formats to generate (overrides config)",
     )
 
     parser.add_argument(
         "--no-isolation",
         action="store_true",
-        help="Run tests without tmux session isolation (faster but less accurate)"
+        help="Run tests without tmux session isolation (faster but less accurate)",
     )
 
     parser.add_argument(
         "--priority",
         nargs="+",
         choices=["critical", "high", "medium", "low"],
-        help="Test only rules with specified priority levels"
+        help="Test only rules with specified priority levels",
     )
 
     parser.add_argument(
         "--type",
         nargs="+",
-        help="Test only specific rule types (e.g., command_requirement, preference)"
+        help="Test only specific rule types (e.g., command_requirement, preference)",
     )
 
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Parse rules and generate scenarios without running tests"
+        help="Parse rules and generate scenarios without running tests",
     )
 
-    parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Enable verbose output"
-    )
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
 
     args = parser.parse_args()
 
@@ -213,7 +199,7 @@ Examples:
     # Dry run: stop here
     if args.dry_run:
         print(f"\n{Fore.GREEN}Dry run complete!{Style.RESET_ALL}")
-        print(f"\nScenarios generated (not executed):")
+        print("\nScenarios generated (not executed):")
         for i, scenario in enumerate(scenarios, 1):
             print(f"  {i}. {scenario['scenario_id']}")
             print(f"     Prompt: {scenario['prompt'][:80]}...")
@@ -230,8 +216,7 @@ Examples:
 
     try:
         execution_results = executor.execute_all(
-            scenarios,
-            agents_file=str(agents_file) if not args.no_isolation else None
+            scenarios, agents_file=str(agents_file) if not args.no_isolation else None
         )
 
         print(f"\n{Fore.GREEN}✓{Style.RESET_ALL} Tests completed!")
@@ -254,10 +239,7 @@ Examples:
     print(f"\n{Fore.YELLOW}[5/6] Validating results...{Style.RESET_ALL}")
     try:
         validator = ResponseValidator(config)
-        validations = validator.validate_batch(
-            execution_results['results'],
-            scenarios
-        )
+        validations = validator.validate_batch(execution_results["results"], scenarios)
 
         # Analyze consistency
         analyzer = ConsistencyAnalyzer()
@@ -308,5 +290,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n{Fore.RED}Unexpected error: {e}{Style.RESET_ALL}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

@@ -5,7 +5,7 @@ Extracts structured content including sections and rules.
 
 import re
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 import frontmatter
 
 
@@ -24,7 +24,7 @@ class MarkdownParser:
             raise FileNotFoundError(f"File not found: {self.file_path}")
 
         # Read file with frontmatter support
-        with open(self.file_path, 'r', encoding='utf-8') as f:
+        with open(self.file_path, "r", encoding="utf-8") as f:
             post = frontmatter.load(f)
             self.metadata = post.metadata
             self.content = post.content
@@ -36,7 +36,7 @@ class MarkdownParser:
             "file_path": str(self.file_path),
             "metadata": self.metadata,
             "sections": self.sections,
-            "raw_content": self.content
+            "raw_content": self.content,
         }
 
     def _extract_sections(self) -> List[Dict]:
@@ -44,11 +44,11 @@ class MarkdownParser:
         sections = []
         current_section = None
 
-        lines = self.content.split('\n')
+        lines = self.content.split("\n")
 
         for line in lines:
             # Check for heading
-            heading_match = re.match(r'^(#{1,6})\s+(.+)$', line)
+            heading_match = re.match(r"^(#{1,6})\s+(.+)$", line)
 
             if heading_match:
                 # Save previous section if exists
@@ -59,12 +59,7 @@ class MarkdownParser:
                 level = len(heading_match.group(1))
                 title = heading_match.group(2).strip()
 
-                current_section = {
-                    "heading": title,
-                    "level": level,
-                    "content": [],
-                    "rules": []
-                }
+                current_section = {"heading": title, "level": level, "content": [], "rules": []}
             elif current_section is not None:
                 # Add content to current section
                 current_section["content"].append(line)
@@ -84,16 +79,16 @@ class MarkdownParser:
         rules = []
 
         # Join lines and look for patterns
-        content = '\n'.join(content_lines)
+        content = "\n".join(content_lines)
 
         # Pattern 1: Bullet points with bold/italic emphasis
-        bullet_pattern = r'^[\s]*[-*]\s+\*\*(.+?)\*\*(.*)$'
+        bullet_pattern = r"^[\s]*[-*]\s+\*\*(.+?)\*\*(.*)$"
 
         # Pattern 2: Simple bullet points
-        simple_bullet_pattern = r'^[\s]*[-*]\s+(.+)$'
+        simple_bullet_pattern = r"^[\s]*[-*]\s+(.+)$"
 
         # Pattern 3: Numbered lists
-        numbered_pattern = r'^[\s]*\d+\.\s+(.+)$'
+        numbered_pattern = r"^[\s]*\d+\.\s+(.+)$"
 
         for line in content_lines:
             if not line.strip():
@@ -130,11 +125,11 @@ class MarkdownParser:
             "priority": "medium",
             "testable": True,
             "commands": [],
-            "keywords": []
+            "keywords": [],
         }
 
         # Extract commands in backticks
-        commands = re.findall(r'`([^`]+)`', rule_text)
+        commands = re.findall(r"`([^`]+)`", rule_text)
         rule["commands"] = commands
 
         # Determine rule type based on keywords
@@ -169,8 +164,19 @@ class MarkdownParser:
             rule["priority"] = "low"
 
         # Extract keywords
-        keywords = ["always", "never", "must", "should", "prefer", "use",
-                   "avoid", "run", "execute", "create", "update"]
+        keywords = [
+            "always",
+            "never",
+            "must",
+            "should",
+            "prefer",
+            "use",
+            "avoid",
+            "run",
+            "execute",
+            "create",
+            "update",
+        ]
         rule["keywords"] = [kw for kw in keywords if kw in text_lower]
 
         return rule

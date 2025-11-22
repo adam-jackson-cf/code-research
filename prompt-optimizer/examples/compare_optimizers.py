@@ -16,9 +16,9 @@ def main():
         print("Error: ANTHROPIC_API_KEY environment variable not set")
         return
 
-    print("="*70)
+    print("=" * 70)
     print("Comparing Different Optimizers")
-    print("="*70)
+    print("=" * 70)
 
     # Prepare examples
     training_examples = [
@@ -60,11 +60,7 @@ def main():
         opt_result = optimizer.optimize(request, verbose=True)
 
         # Evaluate
-        eval_result = evaluator.evaluate(
-            opt_result.optimized_prompt,
-            test_examples,
-            verbose=True
-        )
+        eval_result = evaluator.evaluate(opt_result.optimized_prompt, test_examples, verbose=True)
 
         results[opt_type] = {
             "optimization": opt_result,
@@ -86,10 +82,7 @@ def main():
         print(f"  Test Passed: {eval_result.passed}/{eval_result.test_cases}")
 
     # Find best optimizer
-    best_optimizer = max(
-        results.items(),
-        key=lambda x: x[1]["evaluation"].accuracy
-    )
+    best_optimizer = max(results.items(), key=lambda x: x[1]["evaluation"].accuracy)
 
     print(f"\n{'='*70}")
     print(f"Best Optimizer: {best_optimizer[0].upper()}")

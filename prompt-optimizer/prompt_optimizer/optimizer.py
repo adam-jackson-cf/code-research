@@ -18,6 +18,7 @@ console = Console()
 
 class TaskSignature(dspy.Signature):
     """Generic task signature for the optimization target."""
+
     input: str = dspy.InputField(desc="The input to process")
     output: str = dspy.OutputField(desc="The expected output")
 
@@ -43,9 +44,7 @@ class PromptOptimizer:
     """
 
     def __init__(
-        self,
-        api_key: Optional[str] = None,
-        default_model: str = "claude-3-5-sonnet-20241022"
+        self, api_key: Optional[str] = None, default_model: str = "claude-3-5-sonnet-20241022"
     ):
         """
         Initialize the prompt optimizer.
@@ -64,14 +63,12 @@ class PromptOptimizer:
             # DSPy uses LiteLLM under the hood, so we need "anthropic/model-name" format
             try:
                 import os
+
                 # Set API key if provided
                 if self.api_key:
                     os.environ["ANTHROPIC_API_KEY"] = self.api_key
 
-                self._lm = dspy.LM(
-                    model=f"anthropic/{model_name}",
-                    max_tokens=4000
-                )
+                self._lm = dspy.LM(model=f"anthropic/{model_name}", max_tokens=4000)
                 dspy.settings.configure(lm=self._lm)
             except Exception as e:
                 console.print(f"[yellow]Warning: Could not setup Anthropic model: {e}[/yellow]")
@@ -83,6 +80,7 @@ class PromptOptimizer:
 
         The metric compares the output against expected outputs from examples.
         """
+
         def metric(gold: dspy.Example, pred: dspy.Prediction, trace=None) -> float:
             """
             Evaluate prediction quality.
@@ -90,7 +88,7 @@ class PromptOptimizer:
             Returns a score between 0 and 1, where 1 is perfect match.
             """
             # Simple exact match for now - can be enhanced
-            if hasattr(pred, 'output') and hasattr(gold, 'output'):
+            if hasattr(pred, "output") and hasattr(gold, "output"):
                 pred_output = str(pred.output).strip().lower()
                 gold_output = str(gold.output).strip().lower()
 
@@ -117,18 +115,11 @@ class PromptOptimizer:
         """Convert Example objects to DSPy examples."""
         dspy_examples = []
         for ex in examples:
-            dspy_ex = dspy.Example(
-                input=ex.input,
-                output=ex.output
-            ).with_inputs("input")
+            dspy_ex = dspy.Example(input=ex.input, output=ex.output).with_inputs("input")
             dspy_examples.append(dspy_ex)
         return dspy_examples
 
-    def optimize(
-        self,
-        request: OptimizationRequest,
-        verbose: bool = True
-    ) -> OptimizationResult:
+    def optimize(self, request: OptimizationRequest, verbose: bool = True) -> OptimizationResult:
         """
         Optimize a prompt based on the request.
 
@@ -162,7 +153,7 @@ class PromptOptimizer:
             request.optimizer_type,
             metric=metric,
             num_threads=request.num_threads,
-            max_iterations=request.max_iterations
+            max_iterations=request.max_iterations,
         )
 
         # Run optimization
@@ -171,19 +162,14 @@ class PromptOptimizer:
                 SpinnerColumn(),
                 TextColumn("[progress.description]{task.description}"),
                 console=console if verbose else None,
-                transient=True
+                transient=True,
             ) as progress:
                 if verbose:
                     task = progress.add_task(
-                        f"Optimizing with {request.optimizer_type.upper()}...",
-                        total=None
+                        f"Optimizing with {request.optimizer_type.upper()}...", total=None
                     )
 
-                optimized_module = optimizer.compile(
-                    module,
-                    trainset=train_examples,
-                    metric=metric
-                )
+                optimized_module = optimizer.compile(module, trainset=train_examples, metric=metric)
 
             # Extract the optimized prompt
             optimized_prompt = self._extract_prompt(optimized_module)
@@ -192,7 +178,7 @@ class PromptOptimizer:
             final_score = self._evaluate_module(optimized_module, train_examples, metric)
 
             if verbose:
-                console.print(f"\n[bold green]✅ Optimization Complete![/bold green]")
+                console.print("\n[bold green]✅ Optimization Complete![/bold green]")
                 console.print(f"[green]Final Score:[/green] {final_score:.2%}")
 
             return OptimizationResult(
@@ -205,7 +191,7 @@ class PromptOptimizer:
                     "model": request.model_name,
                 },
                 num_iterations=request.max_iterations,
-                optimizer_used=request.optimizer_type
+                optimizer_used=request.optimizer_type,
             )
 
         except Exception as e:
@@ -213,21 +199,14 @@ class PromptOptimizer:
             raise
 
     def _get_optimizer(
-        self,
-        optimizer_type: str,
-        metric: Callable,
-        num_threads: int,
-        max_iterations: int
+        self, optimizer_type: str, metric: Callable, num_threads: int, max_iterations: int
     ):
         """Get the appropriate DSPy optimizer."""
         if optimizer_type == "gepa":
             # GEPA: Genetic-Pareto optimizer
             try:
                 return dspy.GEPA(
-                    metric=metric,
-                    breadth=num_threads,
-                    depth=max_iterations,
-                    init_temperature=1.0
+                    metric=metric, breadth=num_threads, depth=max_iterations, init_temperature=1.0
                 )
             except (AttributeError, ImportError):
                 console.print("[yellow]GEPA not available, falling back to MIPROv2[/yellow]")
@@ -248,36 +227,34 @@ class PromptOptimizer:
 
         # Default to Bootstrap (most widely available)
         return dspy.BootstrapFewShot(
-            metric=metric,
-            max_bootstrapped_demos=min(max_iterations, 8),
-            max_labeled_demos=0
+            metric=metric, max_bootstrapped_demos=min(max_iterations, 8), max_labeled_demos=0
         )
 
     def _extract_prompt(self, module: dspy.Module) -> str:
         """Extract the optimized prompt from the compiled module."""
         try:
             # Try to get the prompt from the predictor
-            if hasattr(module, 'predictor'):
+            if hasattr(module, "predictor"):
                 predictor = module.predictor
 
                 # Check for prompt template
-                if hasattr(predictor, 'extended_signature'):
+                if hasattr(predictor, "extended_signature"):
                     sig = predictor.extended_signature
                     prompt_parts = []
 
                     # Get instructions if available
-                    if hasattr(sig, 'instructions'):
+                    if hasattr(sig, "instructions"):
                         prompt_parts.append(sig.instructions)
 
                     # Get field descriptions
-                    if hasattr(sig, 'input_fields'):
+                    if hasattr(sig, "input_fields"):
                         for field_name, field in sig.input_fields.items():
-                            if hasattr(field, 'desc'):
+                            if hasattr(field, "desc"):
                                 prompt_parts.append(f"Input ({field_name}): {field.desc}")
 
-                    if hasattr(sig, 'output_fields'):
+                    if hasattr(sig, "output_fields"):
                         for field_name, field in sig.output_fields.items():
-                            if hasattr(field, 'desc'):
+                            if hasattr(field, "desc"):
                                 prompt_parts.append(f"Output ({field_name}): {field.desc}")
 
                     if prompt_parts:
@@ -290,10 +267,7 @@ class PromptOptimizer:
             return f"[Could not extract prompt: {e}]"
 
     def _evaluate_module(
-        self,
-        module: dspy.Module,
-        examples: List[dspy.Example],
-        metric: Callable
+        self, module: dspy.Module, examples: List[dspy.Example], metric: Callable
     ) -> float:
         """Evaluate the module on examples using the metric."""
         if not examples:

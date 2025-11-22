@@ -1,6 +1,5 @@
 """Configuration management for the codebase search CLI."""
 
-import os
 from pathlib import Path
 from typing import Optional
 
@@ -19,21 +18,13 @@ class Config(BaseSettings):
     )
 
     google_api_key: str = Field(..., description="Google API key for Gemini")
-    file_search_store_name: Optional[str] = Field(
-        None, description="Name of the file search store"
-    )
-    file_search_store_id: Optional[str] = Field(
-        None, description="ID of the file search store"
-    )
-    model_name: str = Field(
-        default="gemini-2.0-flash-exp", description="Gemini model to use"
-    )
+    file_search_store_name: Optional[str] = Field(None, description="Name of the file search store")
+    file_search_store_id: Optional[str] = Field(None, description="ID of the file search store")
+    model_name: str = Field(default="gemini-2.0-flash-exp", description="Gemini model to use")
     max_tokens_per_chunk: int = Field(
         default=500, description="Maximum tokens per chunk when indexing"
     )
-    max_overlap_tokens: int = Field(
-        default=50, description="Maximum overlap tokens between chunks"
-    )
+    max_overlap_tokens: int = Field(default=50, description="Maximum overlap tokens between chunks")
 
     @classmethod
     def load_from_env(cls, env_path: Optional[Path] = None) -> "Config":
@@ -63,9 +54,7 @@ class Config(BaseSettings):
         if env_path.exists():
             with open(env_path, "r") as f:
                 lines = [
-                    line
-                    for line in f.readlines()
-                    if not line.startswith("FILE_SEARCH_STORE_")
+                    line for line in f.readlines() if not line.startswith("FILE_SEARCH_STORE_")
                 ]
 
         # Add new store info

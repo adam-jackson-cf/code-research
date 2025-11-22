@@ -3,11 +3,9 @@ Test Runner - Execute test scenarios using Claude CLI.
 """
 
 import subprocess
-import json
 import time
 from typing import Dict, List, Optional
 from pathlib import Path
-import tempfile
 
 
 class TestRunner:
@@ -50,7 +48,7 @@ class TestRunner:
                 "response": result.get("response", ""),
                 "error": None,
                 "duration": duration,
-                "timestamp": start_time
+                "timestamp": start_time,
             }
 
         except subprocess.TimeoutExpired:
@@ -62,7 +60,7 @@ class TestRunner:
                 "response": "",
                 "error": "Timeout",
                 "duration": end_time - start_time,
-                "timestamp": start_time
+                "timestamp": start_time,
             }
 
         except Exception as e:
@@ -74,7 +72,7 @@ class TestRunner:
                 "response": "",
                 "error": str(e),
                 "duration": end_time - start_time,
-                "timestamp": start_time
+                "timestamp": start_time,
             }
 
     def run_batch(self, scenarios: List[Dict], iterations: int = 5) -> List[Dict]:
@@ -92,7 +90,9 @@ class TestRunner:
 
         for scenario in scenarios:
             for i in range(iterations):
-                print(f"  Running scenario {scenario['scenario_id']} (iteration {i+1}/{iterations})")
+                print(
+                    f"  Running scenario {scenario['scenario_id']} (iteration {i+1}/{iterations})"
+                )
                 result = self.run_scenario(scenario, iteration=i)
                 results.append(result)
 
@@ -115,11 +115,7 @@ class TestRunner:
         # Create a temporary file for the prompt if needed
         # Use print mode (-p flag) for non-interactive execution
 
-        cmd = [
-            self.claude_cli,
-            "-p",  # Print mode
-            prompt
-        ]
+        cmd = [self.claude_cli, "-p", prompt]  # Print mode
 
         # Execute the command
         process = subprocess.run(
@@ -127,7 +123,7 @@ class TestRunner:
             capture_output=True,
             text=True,
             timeout=self.timeout,
-            cwd=None  # Use current directory
+            cwd=None,  # Use current directory
         )
 
         if process.returncode != 0:
@@ -136,11 +132,7 @@ class TestRunner:
         # Parse the output
         response = process.stdout.strip()
 
-        return {
-            "response": response,
-            "exit_code": process.returncode,
-            "stderr": process.stderr
-        }
+        return {"response": response, "exit_code": process.returncode, "stderr": process.stderr}
 
     def run_with_isolation(self, scenario: Dict, agents_file: str, iteration: int = 0) -> Dict:
         """
@@ -183,7 +175,9 @@ cd {session_dir}
             # Run the script in the tmux session
             start_time = time.time()
 
-            self.session_manager.execute_command(session_id, f"bash {script_path}", capture_output=False)
+            self.session_manager.execute_command(
+                session_id, f"bash {script_path}", capture_output=False
+            )
 
             # Wait for completion and capture output
             time.sleep(2)  # Give it time to execute
@@ -204,7 +198,7 @@ cd {session_dir}
                 "error": None,
                 "duration": duration,
                 "timestamp": start_time,
-                "isolated": True
+                "isolated": True,
             }
 
         except Exception as e:
@@ -220,7 +214,7 @@ cd {session_dir}
                 "error": str(e),
                 "duration": 0,
                 "timestamp": time.time(),
-                "isolated": True
+                "isolated": True,
             }
 
 
@@ -292,5 +286,5 @@ class TestExecutor:
             "iterations": self.iterations,
             "total_duration": total_duration,
             "started_at": start_time,
-            "completed_at": end_time
+            "completed_at": end_time,
         }

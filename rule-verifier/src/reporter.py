@@ -18,8 +18,16 @@ class Reporter:
 
     def __init__(self, config: Dict = None):
         self.config = config or {}
-        self.output_dir = Path(config.get("reporting", {}).get("output_dir", "./results")) if config else Path("./results")
-        self.formats = config.get("reporting", {}).get("formats", ["console", "json"]) if config else ["console", "json"]
+        self.output_dir = (
+            Path(config.get("reporting", {}).get("output_dir", "./results"))
+            if config
+            else Path("./results")
+        )
+        self.formats = (
+            config.get("reporting", {}).get("formats", ["console", "json"])
+            if config
+            else ["console", "json"]
+        )
         self.verbose = config.get("reporting", {}).get("verbose", True) if config else True
 
         # Ensure output directory exists
@@ -106,7 +114,7 @@ class Reporter:
             "total_rules": len(by_rule),
             "by_scenario": by_scenario,
             "by_rule": by_rule,
-            "execution_data": execution_data
+            "execution_data": execution_data,
         }
 
     def _print_console_report(self, summary: Dict, validations: List[Dict]):
@@ -131,8 +139,12 @@ class Reporter:
         # Scenario summary
         print(f"{Fore.YELLOW}SCENARIO CONSISTENCY{Style.RESET_ALL}")
         print(f"  Total Scenarios:       {summary['total_scenarios']}")
-        print(f"  Consistent (≥80%):     {Fore.GREEN}{summary['consistent_scenarios']}{Style.RESET_ALL}")
-        print(f"  Inconsistent (<80%):   {Fore.RED}{summary['inconsistent_scenarios']}{Style.RESET_ALL}")
+        print(
+            f"  Consistent (≥80%):     {Fore.GREEN}{summary['consistent_scenarios']}{Style.RESET_ALL}"
+        )
+        print(
+            f"  Inconsistent (<80%):   {Fore.RED}{summary['inconsistent_scenarios']}{Style.RESET_ALL}"
+        )
         print()
 
         # Rule-by-rule breakdown
@@ -152,10 +164,14 @@ class Reporter:
             # Get rule description from first validation
             if rule_validations:
                 rule_desc = rule_validations[0]["scenario"]["rule"]["description"]
-                wrapped_desc = textwrap.fill(rule_desc, width=70, initial_indent="    ", subsequent_indent="    ")
+                wrapped_desc = textwrap.fill(
+                    rule_desc, width=70, initial_indent="    ", subsequent_indent="    "
+                )
                 print(f"{Fore.LIGHTBLACK_EX}{wrapped_desc}{Style.RESET_ALL}")
 
-            print(f"    Pass Rate: {self._colored_pass_rate(rule_pass_rate)} ({rule_passed}/{rule_total})")
+            print(
+                f"    Pass Rate: {self._colored_pass_rate(rule_pass_rate)} ({rule_passed}/{rule_total})"
+            )
             print()
 
         # Execution info
@@ -180,7 +196,9 @@ class Reporter:
 
         return f"{color}{pass_rate:.1f}%{Style.RESET_ALL}"
 
-    def _generate_json_report(self, summary: Dict, validations: List[Dict], execution_data: Dict) -> Path:
+    def _generate_json_report(
+        self, summary: Dict, validations: List[Dict], execution_data: Dict
+    ) -> Path:
         """Generate JSON report."""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_path = self.output_dir / f"report_{timestamp}.json"
@@ -196,32 +214,36 @@ class Reporter:
                 "total_scenarios": summary["total_scenarios"],
                 "consistent_scenarios": summary["consistent_scenarios"],
                 "inconsistent_scenarios": summary["inconsistent_scenarios"],
-                "total_rules": summary["total_rules"]
+                "total_rules": summary["total_rules"],
             },
             "execution_data": execution_data,
-            "validations": []
+            "validations": [],
         }
 
         # Add detailed validation results
         for v in validations:
-            report_data["validations"].append({
-                "scenario_id": v["result"]["scenario_id"],
-                "rule_id": v["scenario"]["rule_id"],
-                "iteration": v["result"]["iteration"],
-                "passed": v["validation"]["passed"],
-                "confidence": v["validation"].get("confidence", 1.0),
-                "checks": v["validation"]["checks"],
-                "duration": v["result"]["duration"],
-                "error": v["result"].get("error")
-            })
+            report_data["validations"].append(
+                {
+                    "scenario_id": v["result"]["scenario_id"],
+                    "rule_id": v["scenario"]["rule_id"],
+                    "iteration": v["result"]["iteration"],
+                    "passed": v["validation"]["passed"],
+                    "confidence": v["validation"].get("confidence", 1.0),
+                    "checks": v["validation"]["checks"],
+                    "duration": v["result"]["duration"],
+                    "error": v["result"].get("error"),
+                }
+            )
 
-        with open(output_path, 'w', encoding='utf-8') as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             json.dump(report_data, f, indent=2)
 
         print(f"JSON report saved to: {output_path}")
         return output_path
 
-    def _generate_markdown_report(self, summary: Dict, validations: List[Dict], execution_data: Dict) -> Path:
+    def _generate_markdown_report(
+        self, summary: Dict, validations: List[Dict], execution_data: Dict
+    ) -> Path:
         """Generate Markdown report."""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_path = self.output_dir / f"report_{timestamp}.md"
@@ -262,7 +284,9 @@ class Reporter:
                 rule_desc = rule_validations[0]["scenario"]["rule"]["description"]
                 md_content.append(f"**Description:** {rule_desc}\n")
 
-            md_content.append(f"**Pass Rate:** {rule_pass_rate:.1f}% ({rule_passed}/{rule_total})\n")
+            md_content.append(
+                f"**Pass Rate:** {rule_pass_rate:.1f}% ({rule_passed}/{rule_total})\n"
+            )
 
         # Execution Info
         md_content.append("## Execution Information\n")
@@ -271,19 +295,23 @@ class Reporter:
         md_content.append(f"- **Scenarios:** {execution_data.get('total_scenarios', 0)}")
         md_content.append(f"- **Iterations per Scenario:** {execution_data.get('iterations', 0)}\n")
 
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write('\n'.join(md_content))
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(md_content))
 
         print(f"Markdown report saved to: {output_path}")
         return output_path
 
-    def _generate_html_report(self, summary: Dict, validations: List[Dict], execution_data: Dict) -> Path:
+    def _generate_html_report(
+        self, summary: Dict, validations: List[Dict], execution_data: Dict
+    ) -> Path:
         """Generate HTML report."""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_path = self.output_dir / f"report_{timestamp}.html"
 
-        pass_rate = summary['pass_rate'] * 100
-        pass_rate_color = "#28a745" if pass_rate >= 80 else "#ffc107" if pass_rate >= 60 else "#dc3545"
+        pass_rate = summary["pass_rate"] * 100
+        pass_rate_color = (
+            "#28a745" if pass_rate >= 80 else "#ffc107" if pass_rate >= 60 else "#dc3545"
+        )
 
         html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -421,7 +449,9 @@ class Reporter:
             status_class = "passed" if rule_pass_rate >= 80 else "failed"
             status_icon = "✅" if rule_pass_rate >= 80 else "❌"
 
-            rule_desc = rule_validations[0]["scenario"]["rule"]["description"] if rule_validations else ""
+            rule_desc = (
+                rule_validations[0]["scenario"]["rule"]["description"] if rule_validations else ""
+            )
 
             html_content += f"""
             <div class="rule-item {status_class}">
@@ -448,7 +478,7 @@ class Reporter:
 </html>
 """
 
-        with open(output_path, 'w', encoding='utf-8') as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             f.write(html_content)
 
         print(f"HTML report saved to: {output_path}")

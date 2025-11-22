@@ -137,9 +137,7 @@ def test_search_command_with_filter(mock_env_setup: Path, mock_genai_client: Moc
     )
 
     with patch("codebase_search_cli.gemini_client.genai.Client", return_value=mock_genai_client):
-        result = runner.invoke(
-            app, ["search", "find functions", "--filter-ext", ".py"]
-        )
+        result = runner.invoke(app, ["search", "find functions", "--filter-ext", ".py"])
 
         # The test might exit with 0 or 1 depending on whether results are found
         assert result.exit_code in [0, 1]

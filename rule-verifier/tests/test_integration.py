@@ -5,8 +5,6 @@ These tests verify the complete workflow with a test fixture codebase.
 """
 
 import sys
-import json
-import shutil
 from pathlib import Path
 import pytest
 
@@ -44,56 +42,56 @@ class MockTestRunner(BaseTestRunner):
                 return {
                     "response": "Run tests using pytest before committing:\n```bash\npytest\n```\nThis will execute all tests in your project and ensure everything works.",
                     "exit_code": 0,
-                    "stderr": ""
+                    "stderr": "",
                 }
 
             elif "test" in prompt_lower and "file" in prompt_lower:
                 return {
                     "response": "Test files should end with _test.py suffix. For example:\n- utils_test.py\n- models_test.py\n- api_test.py\n\nThis naming convention makes them easy to discover with pytest.",
                     "exit_code": 0,
-                    "stderr": ""
+                    "stderr": "",
                 }
 
             elif "source" in prompt_lower or "code" in prompt_lower or "src" in prompt_lower:
                 return {
                     "response": "Place all source code in the src/ directory. This keeps your project organized:\n```\nproject/\n├── src/\n│   ├── main.py\n│   └── models.py\n└── tests/\n```",
                     "exit_code": 0,
-                    "stderr": ""
+                    "stderr": "",
                 }
 
             elif "utility" in prompt_lower or "utils" in prompt_lower or "function" in prompt_lower:
                 return {
                     "response": "Place all utility functions in lib/utils.py. This centralizes common functions:\n```python\n# lib/utils.py\ndef calculate_sum(numbers):\n    return sum(numbers)\n```",
                     "exit_code": 0,
-                    "stderr": ""
+                    "stderr": "",
                 }
 
             elif "docstring" in prompt_lower or "document" in prompt_lower:
                 return {
-                    "response": "Add docstrings to all public functions using Google-style format:\n```python\ndef calculate_sum(numbers):\n    \"\"\"Calculate the sum of numbers.\n    \n    Args:\n        numbers: List of numbers\n        \n    Returns:\n        Sum of all numbers\n    \"\"\"\n    return sum(numbers)\n```",
+                    "response": 'Add docstrings to all public functions using Google-style format:\n```python\ndef calculate_sum(numbers):\n    """Calculate the sum of numbers.\n    \n    Args:\n        numbers: List of numbers\n        \n    Returns:\n        Sum of all numbers\n    """\n    return sum(numbers)\n```',
                     "exit_code": 0,
-                    "stderr": ""
+                    "stderr": "",
                 }
 
             elif "import" in prompt_lower or "module" in prompt_lower:
                 return {
                     "response": "Use ES6-style imports for modules:\n```python\nimport os\nfrom lib.utils import calculate_sum\n```\nThis is the modern Python import syntax.",
                     "exit_code": 0,
-                    "stderr": ""
+                    "stderr": "",
                 }
 
             elif "async" in prompt_lower or "await" in prompt_lower:
                 return {
                     "response": "Prefer async/await for asynchronous operations:\n```python\nasync def fetch_data():\n    result = await async_fetch_data('url')\n    return result\n```",
                     "exit_code": 0,
-                    "stderr": ""
+                    "stderr": "",
                 }
 
             else:
                 return {
                     "response": "I'll follow the project guidelines specified in AGENTS.md for this task.",
                     "exit_code": 0,
-                    "stderr": ""
+                    "stderr": "",
                 }
 
         elif self.response_mode == "incorrect":
@@ -102,28 +100,28 @@ class MockTestRunner(BaseTestRunner):
                 return {
                     "response": "Run tests using:\n```bash\nnosetests\n# or\nunittest discover\n```",
                     "exit_code": 0,
-                    "stderr": ""
+                    "stderr": "",
                 }
 
             elif "test" in prompt_lower and "file" in prompt_lower:
                 return {
                     "response": "Test files should end with .test.js or .spec.py suffix for consistency.",
                     "exit_code": 0,
-                    "stderr": ""
+                    "stderr": "",
                 }
 
             elif "utility" in prompt_lower or "function" in prompt_lower:
                 return {
                     "response": "Place utility functions in utils/helpers.py or src/common.py.",
                     "exit_code": 0,
-                    "stderr": ""
+                    "stderr": "",
                 }
 
             else:
                 return {
                     "response": "Here's a general suggestion without following the specific project guidelines.",
                     "exit_code": 0,
-                    "stderr": ""
+                    "stderr": "",
                 }
 
 
@@ -131,19 +129,9 @@ class MockTestRunner(BaseTestRunner):
 def config():
     """Provide test configuration."""
     return {
-        "test": {
-            "iterations": 1,
-            "timeout": 30
-        },
-        "claude": {
-            "cli_path": "claude",
-            "print_mode": True
-        },
-        "validation": {
-            "strict_mode": False,
-            "case_sensitive": False,
-            "min_confidence": 0.7
-        }
+        "test": {"iterations": 1, "timeout": 30},
+        "claude": {"cli_path": "claude", "print_mode": True},
+        "validation": {"strict_mode": False, "case_sensitive": False, "min_confidence": 0.7},
     }
 
 
@@ -190,7 +178,7 @@ class TestIntegrationCorrectlyFollowed:
         total = len(validations)
         pass_rate = (passed / total) * 100 if total > 0 else 0
 
-        print(f"\n✓ Test Scenario 1: Rules Correctly Followed")
+        print("\n✓ Test Scenario 1: Rules Correctly Followed")
         print(f"  Total scenarios: {total}")
         print(f"  Passed: {passed}")
         print(f"  Pass rate: {pass_rate:.1f}%")
@@ -198,14 +186,16 @@ class TestIntegrationCorrectlyFollowed:
         # When rules are followed correctly, we expect high pass rate
         # Note: Not all scenarios may have strict validation, so we use a reasonable threshold
         assert total > 0, "No scenarios were generated"
-        assert passed >= total * 0.5, f"Expected at least 50% pass rate for correct responses, got {pass_rate:.1f}%"
+        assert (
+            passed >= total * 0.5
+        ), f"Expected at least 50% pass rate for correct responses, got {pass_rate:.1f}%"
 
     def test_specific_pytest_command_rule(self, config, extracted_rules):
         """Test specific rule: pytest command is recommended."""
         # Find rules related to pytest
         pytest_rules = [r for r in extracted_rules if "pytest" in r["description"].lower()]
 
-        print(f"\n✓ Testing pytest command rule")
+        print("\n✓ Testing pytest command rule")
         print(f"  Found {len(pytest_rules)} pytest-related rules")
 
         if pytest_rules:
@@ -220,7 +210,7 @@ class TestIntegrationCorrectlyFollowed:
 
                 # Validate - should mention pytest
                 assert "pytest" in result["response"].lower(), "Response should mention pytest"
-                print(f"  ✓ Response correctly mentions pytest")
+                print("  ✓ Response correctly mentions pytest")
 
 
 class TestIntegrationModifiedAndFollowed:
@@ -228,7 +218,7 @@ class TestIntegrationModifiedAndFollowed:
 
     def test_modified_rule_still_followed(self, config, tmp_path):
         """Test that modified rules are still validated correctly."""
-        print(f"\n✓ Test Scenario 2: Modified Rule Still Followed")
+        print("\n✓ Test Scenario 2: Modified Rule Still Followed")
 
         # Create original AGENTS.md
         original_agents = tmp_path / "AGENTS_original.md"
@@ -243,7 +233,7 @@ class TestIntegrationModifiedAndFollowed:
         extractor_original = RuleExtractor(parsed_original)
         rules_original = extractor_original.extract_rules()
 
-        print(f"  Original rule: 'Run tests with pytest'")
+        print("  Original rule: 'Run tests with pytest'")
         print(f"  Extracted {len(rules_original)} rule(s)")
 
         # Create modified AGENTS.md
@@ -259,7 +249,7 @@ class TestIntegrationModifiedAndFollowed:
         extractor_modified = RuleExtractor(parsed_modified)
         rules_modified = extractor_modified.extract_rules()
 
-        print(f"  Modified rule: 'Run tests with pytest or unittest'")
+        print("  Modified rule: 'Run tests with pytest or unittest'")
         print(f"  Extracted {len(rules_modified)} rule(s)")
 
         # Both should extract rules
@@ -279,7 +269,7 @@ class TestIntegrationModifiedAndFollowed:
                 return {
                     "response": "You can run tests using pytest or unittest:\n```bash\npytest\n# or\npython -m unittest\n```\nBoth are supported.",
                     "exit_code": 0,
-                    "stderr": ""
+                    "stderr": "",
                 }
 
         runner = FlexibleRunner(config, response_mode="correct")
@@ -294,7 +284,7 @@ class TestIntegrationModifiedAndFollowed:
             has_unittest = "unittest" in response_lower
 
             assert has_pytest or has_unittest, "Response should mention pytest or unittest"
-            print(f"  ✓ Modified rule validated successfully")
+            print("  ✓ Modified rule validated successfully")
             print(f"    - Mentions pytest: {has_pytest}")
             print(f"    - Mentions unittest: {has_unittest}")
 
@@ -304,7 +294,7 @@ class TestIntegrationNotFollowed:
 
     def test_rules_not_followed_detected(self, config, scenarios):
         """Test that violations are detected when rules are not followed."""
-        print(f"\n✓ Test Scenario 3: Rules Not Being Followed")
+        print("\n✓ Test Scenario 3: Rules Not Being Followed")
 
         # Use mock runner with incorrect responses
         runner = MockTestRunner(config, response_mode="incorrect")
@@ -340,7 +330,7 @@ class TestIntegrationNotFollowed:
         # Find pytest rule
         pytest_rules = [r for r in extracted_rules if "pytest" in r["description"].lower()]
 
-        print(f"\n✓ Testing pytest rule violation detection")
+        print("\n✓ Testing pytest rule violation detection")
 
         if pytest_rules:
             generator = ScenarioGenerator(pytest_rules, config)
@@ -370,7 +360,7 @@ class TestIntegrationConsistency:
         if not scenarios:
             pytest.skip("No scenarios generated")
 
-        print(f"\n✓ Testing consistency across iterations")
+        print("\n✓ Testing consistency across iterations")
 
         # Use first scenario
         test_scenario = scenarios[0]
@@ -392,7 +382,7 @@ class TestIntegrationConsistency:
         passed = sum(1 for v in validations if v["validation"]["passed"])
         consistency_rate = (passed / 5) * 100
 
-        print(f"  Iterations: 5")
+        print("  Iterations: 5")
         print(f"  Passed: {passed}/5")
         print(f"  Consistency rate: {consistency_rate:.1f}%")
 
@@ -411,7 +401,7 @@ def test_full_integration_workflow(config):
     print("\n[1/6] Parsing AGENTS.md...")
     parsed_data = parse_agents_file(str(AGENTS_FILE))
     print(f"      ✓ Found {len(parsed_data['sections'])} sections")
-    assert len(parsed_data['sections']) > 0
+    assert len(parsed_data["sections"]) > 0
 
     # Step 2: Extract rules
     print("\n[2/6] Extracting rules...")
@@ -463,8 +453,8 @@ def test_full_integration_workflow(config):
     print("=" * 70)
     print(f"Correct responses:   {passed_correct}/{len(validations_correct)} passed")
     print(f"Incorrect responses: {passed_incorrect}/{len(validations_incorrect)} passed")
-    print(f"\nThe tool successfully differentiates between compliant and")
-    print(f"non-compliant responses!")
+    print("\nThe tool successfully differentiates between compliant and")
+    print("non-compliant responses!")
     print("=" * 70)
     print("✓ FULL INTEGRATION TEST PASSED")
     print("=" * 70)

@@ -18,9 +18,7 @@ def test_create_store(mock_config: Config, mock_genai_client: Mock, mocker: Mock
 
     assert store_id == "test_store_123"
     assert store_name == "fileSearchStores/test_store_123"
-    mock_genai_client.file_search_stores.create.assert_called_once_with(
-        display_name="test_store"
-    )
+    mock_genai_client.file_search_stores.create.assert_called_once_with(display_name="test_store")
 
 
 def test_get_store(mock_config: Config, mock_genai_client: Mock, mocker: Mock) -> None:

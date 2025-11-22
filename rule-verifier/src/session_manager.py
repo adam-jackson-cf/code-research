@@ -2,9 +2,7 @@
 Session Manager - Manage isolated tmux sessions for testing.
 """
 
-import os
 import shutil
-import tempfile
 from pathlib import Path
 from typing import Dict, List, Optional
 import libtmux
@@ -17,7 +15,9 @@ class SessionManager:
     def __init__(self, config: Dict):
         self.config = config
         self.server = libtmux.Server()
-        self.base_dir = Path(config.get("session", {}).get("base_dir", "/tmp/rule-verifier-sessions"))
+        self.base_dir = Path(
+            config.get("session", {}).get("base_dir", "/tmp/rule-verifier-sessions")
+        )
         self.prefix = config.get("session", {}).get("tmux_prefix", "rule-verify-")
         self.cleanup_enabled = config.get("session", {}).get("cleanup_after_test", True)
 
@@ -60,7 +60,7 @@ class SessionManager:
             session_name=session_name,
             start_directory=str(session_dir),
             attach=False,
-            kill_session=True  # Kill existing session if it exists
+            kill_session=True,  # Kill existing session if it exists
         )
 
         # Store session info
@@ -70,14 +70,16 @@ class SessionManager:
             "session_dir": str(session_dir),
             "tmux_session": session,
             "agents_file": agents_file,
-            "created_at": time.time()
+            "created_at": time.time(),
         }
 
         self.active_sessions[session_id] = session_info
 
         return session_info
 
-    def execute_command(self, session_id: str, command: str, capture_output: bool = True) -> Optional[str]:
+    def execute_command(
+        self, session_id: str, command: str, capture_output: bool = True
+    ) -> Optional[str]:
         """
         Execute a command in a tmux session.
 

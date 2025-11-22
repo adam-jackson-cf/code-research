@@ -21,36 +21,36 @@ def main():
         print("Please set it with: export ANTHROPIC_API_KEY='your-key-here'")
         return
 
-    print("="*70)
+    print("=" * 70)
     print("Prompt Optimizer - Basic Usage Example")
-    print("="*70)
+    print("=" * 70)
 
     # Define training examples
     training_examples = [
         Example(
             input="I love this product! It's amazing!",
             output="positive",
-            reasoning="Enthusiastic language with exclamation marks"
+            reasoning="Enthusiastic language with exclamation marks",
         ),
         Example(
             input="This is terrible. Waste of money.",
             output="negative",
-            reasoning="Strong negative sentiment"
+            reasoning="Strong negative sentiment",
         ),
         Example(
             input="It's okay, nothing special.",
             output="neutral",
-            reasoning="Lukewarm, neutral response"
+            reasoning="Lukewarm, neutral response",
         ),
         Example(
             input="Highly recommend! Best purchase ever!",
             output="positive",
-            reasoning="Strong positive recommendation"
+            reasoning="Strong positive recommendation",
         ),
         Example(
             input="Disappointed. Would not buy again.",
             output="negative",
-            reasoning="Expression of disappointment"
+            reasoning="Expression of disappointment",
         ),
     ]
 
@@ -82,31 +82,27 @@ def main():
     result = optimizer.optimize(request, verbose=True)
 
     # Display results
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("OPTIMIZATION RESULTS")
-    print("="*70)
-    print(f"\nOriginal Objective:")
+    print("=" * 70)
+    print("\nOriginal Objective:")
     print(f"  {result.original_objective}")
-    print(f"\nOptimized Prompt:")
+    print("\nOptimized Prompt:")
     print(f"  {result.optimized_prompt[:200]}...")
-    print(f"\nTraining Performance:")
+    print("\nTraining Performance:")
     print(f"  Score: {result.final_score:.2%}")
     print(f"  Optimizer: {result.optimizer_used}")
     print(f"  Iterations: {result.num_iterations}")
 
     # Evaluate on test set
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("EVALUATION ON TEST SET")
-    print("="*70)
+    print("=" * 70)
 
     evaluator = PromptEvaluator()
-    evaluation = evaluator.evaluate(
-        result.optimized_prompt,
-        test_examples,
-        verbose=True
-    )
+    evaluation = evaluator.evaluate(result.optimized_prompt, test_examples, verbose=True)
 
-    print(f"\nTest Set Performance:")
+    print("\nTest Set Performance:")
     print(f"  Accuracy: {evaluation.accuracy:.2%}")
     print(f"  Passed: {evaluation.passed}/{evaluation.test_cases}")
     print(f"  Failed: {evaluation.failed}/{evaluation.test_cases}")
@@ -120,9 +116,9 @@ def main():
         print(f"     Expected: {detail['expected']}")
         print(f"     Predicted: {detail['predicted']}")
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("Example Complete!")
-    print("="*70)
+    print("=" * 70)
 
 
 if __name__ == "__main__":

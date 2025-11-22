@@ -98,9 +98,7 @@ def test_integration_create_and_delete_store(integration_env: Path) -> None:
     client.delete_store(store_name)
 
 
-def test_integration_upload_and_search(
-    integration_env: Path, sample_codebase: Path
-) -> None:
+def test_integration_upload_and_search(integration_env: Path, sample_codebase: Path) -> None:
     """Test uploading files and searching."""
     config = Config.load_from_env()
     client = GeminiSearchClient(config)
