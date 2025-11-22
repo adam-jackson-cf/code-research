@@ -105,10 +105,3 @@ export function getProviderDisplayName(mode: ProviderConfig['mode']): string {
     : 'Anthropic API Key';
 }
 
-/**
- * Create a provider-aware query function with bound config
- */
-export function createQueryFunction(providerConfig: ProviderConfig) {
-  return (prompt: string, options: QueryOptions) =>
-    query(prompt, options, providerConfig);
-}
