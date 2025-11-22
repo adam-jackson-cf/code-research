@@ -75,7 +75,6 @@ npm install -g @anthropic-ai/claude-code
 
 # Authenticate with your subscription
 claude login
-# Select "subscription" when prompted
 
 # Run Oracle with subscription mode
 npm run research -- -p subscription "your research query"
