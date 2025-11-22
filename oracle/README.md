@@ -11,6 +11,7 @@ A powerful deep research assistant powered by the Claude Agent SDK, featuring mu
 - **⚡ Efficient Context Management**: Automatic compaction and subagent delegation
 - **🎯 Research Orchestration**: Intelligent planning and task coordination
 - **📈 Progress Tracking**: Real-time status updates and progress indicators
+- **🔐 Flexible Authentication**: Support for both API key and Claude subscription (Pro/Max) modes
 
 ## 🏗️ Architecture
 
@@ -47,22 +48,54 @@ npm install
 
 ## ⚙️ Configuration
 
-Create a `.env` file:
+Oracle supports two authentication modes for Claude:
+
+### Option 1: API Key Mode (Default)
+
+Use your Anthropic API key for direct API access:
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your API keys:
+Edit `.env` with your API key:
 
 ```env
-# Required
+PROVIDER_MODE=api-key
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+```
+
+### Option 2: Subscription Mode (Claude Pro/Max)
+
+Use your Claude subscription (Pro or Max) via the Claude Code CLI:
+
+```bash
+# Install Claude Code CLI globally
+npm install -g @anthropic-ai/claude-code
+
+# Authenticate with your subscription
+claude login
+# Select "subscription" when prompted
+
+# Run Oracle with subscription mode
+npm run research -- -p subscription "your research query"
+```
+
+No API key required when using subscription mode!
+
+### Full Configuration Options
+
+```env
+# Provider Configuration
+PROVIDER_MODE=api-key  # or 'subscription'
+
+# Claude API (required for api-key mode, optional for subscription)
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
 
 # Optional (for voice features)
 OPENAI_API_KEY=your_openai_api_key_here
 
-# Optional configuration
+# Research Configuration
 MIN_SOURCES_PER_TOPIC=10
 MAX_SEARCH_DEPTH=3
 ENABLE_VOICE=true
@@ -74,10 +107,17 @@ OUTPUT_FORMAT=markdown
 
 ### CLI Commands
 
-#### Basic Research
+#### Basic Research (API Key Mode)
 
 ```bash
 npm run research "impact of artificial intelligence on healthcare"
+```
+
+#### Research with Subscription Mode
+
+```bash
+# Use your Claude Pro/Max subscription instead of API key
+npm run research -- -p subscription "impact of artificial intelligence on healthcare"
 ```
 
 #### With Voice Planning
@@ -111,10 +151,24 @@ npm run research config
 ```typescript
 import { research } from 'oracle-research-assistant';
 
+// Using API key mode
 const report = await research(
   'The future of renewable energy',
   {
     anthropicApiKey: 'your-key',
+    provider: { mode: 'api-key' },
+    scope: 'broad',
+    depth: 'deep',
+    minSources: 15,
+    outputFormat: 'markdown'
+  }
+);
+
+// Using subscription mode (requires claude login)
+const reportWithSubscription = await research(
+  'The future of renewable energy',
+  {
+    provider: { mode: 'subscription' },
     scope: 'broad',
     depth: 'deep',
     minSources: 15,
@@ -134,6 +188,7 @@ import {
   OutputFormatter
 } from 'oracle-research-assistant';
 
+// API key mode configuration
 const config = {
   anthropicApiKey: process.env.ANTHROPIC_API_KEY!,
   openaiApiKey: process.env.OPENAI_API_KEY,
@@ -141,7 +196,19 @@ const config = {
   maxSearchDepth: 3,
   enableVoice: true,
   outputDir: './research-output',
-  outputFormat: 'html' as const
+  outputFormat: 'html' as const,
+  provider: { mode: 'api-key' as const }
+};
+
+// Or subscription mode (no API key needed)
+const subscriptionConfig = {
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  minSourcesPerTopic: 10,
+  maxSearchDepth: 3,
+  enableVoice: true,
+  outputDir: './research-output',
+  outputFormat: 'html' as const,
+  provider: { mode: 'subscription' as const }
 };
 
 // Create orchestrator
@@ -327,6 +394,8 @@ MIT License
 
 Built with:
 - [Claude Agent SDK](https://docs.anthropic.com/en/api/agent-sdk) by Anthropic
+- [ai-sdk-provider-claude-code](https://github.com/ben-vargas/ai-sdk-provider-claude-code) - Claude subscription support
+- [Vercel AI SDK](https://sdk.vercel.ai/) for AI provider abstraction
 - [OpenAI APIs](https://platform.openai.com/) for voice features
 - Chalk, Boxen, Ora for beautiful CLI output
 

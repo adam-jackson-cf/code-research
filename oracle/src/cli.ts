@@ -10,7 +10,8 @@ import chalk from 'chalk';
 import { ResearchOrchestrator } from './orchestrator.js';
 import { VoiceInterface } from './voice.js';
 import { OutputFormatter } from './formatter.js';
-import type { ResearchConfig, ResearchRequest } from './types.js';
+import { isSubscriptionAvailable, getProviderDisplayName } from './provider.js';
+import type { ResearchConfig, ResearchRequest, ProviderConfig } from './types.js';
 import * as readline from 'readline';
 
 // Load environment variables
@@ -33,6 +34,7 @@ program
   .option('-f, --format <type>', 'Output format (markdown|json|html)', 'markdown')
   .option('-o, --output <dir>', 'Output directory', './output')
   .option('--min-sources <number>', 'Minimum sources per topic', '10')
+  .option('-p, --provider <mode>', 'Provider mode: api-key (uses ANTHROPIC_API_KEY) or subscription (uses Claude Code CLI auth)', 'api-key')
   .action(async (query, options) => {
     try {
       const config = createConfig(options);
@@ -157,21 +159,44 @@ program
 program
   .command('config')
   .description('Display current configuration')
-  .action(() => {
-    const config = createConfig({});
+  .option('-p, --provider <mode>', 'Provider mode to check', 'api-key')
+  .action(async (options) => {
+    const providerMode = (options.provider || process.env.PROVIDER_MODE || 'api-key') as ProviderConfig['mode'];
+    const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
 
     console.log(chalk.bold.cyan('\n⚙️  Oracle Configuration\n'));
     console.log(chalk.gray('─'.repeat(50)));
 
-    console.log(chalk.white(`Anthropic API Key: ${config.anthropicApiKey ? chalk.green('✓ Set') : chalk.red('✗ Not set')}`));
-    console.log(chalk.white(`OpenAI API Key: ${config.openaiApiKey ? chalk.green('✓ Set') : chalk.yellow('○ Not set (voice disabled)')}`));
-    console.log(chalk.white(`Min Sources: ${config.minSourcesPerTopic}`));
-    console.log(chalk.white(`Max Search Depth: ${config.maxSearchDepth}`));
-    console.log(chalk.white(`Voice Enabled: ${config.enableVoice ? chalk.green('Yes') : chalk.gray('No')}`));
-    console.log(chalk.white(`Output Directory: ${config.outputDir}`));
-    console.log(chalk.white(`Output Format: ${config.outputFormat}`));
+    // Provider mode
+    console.log(chalk.white(`Provider Mode: ${chalk.cyan(getProviderDisplayName(providerMode))}`));
+
+    // API Key status
+    if (providerMode === 'api-key') {
+      console.log(chalk.white(`Anthropic API Key: ${anthropicApiKey ? chalk.green('✓ Set') : chalk.red('✗ Not set (required)')}`));
+    } else {
+      console.log(chalk.white(`Anthropic API Key: ${anthropicApiKey ? chalk.green('✓ Set') : chalk.gray('○ Not required (using subscription)')}`));
+      // Check subscription availability
+      console.log(chalk.white('Checking subscription auth...'));
+      const subscriptionAvailable = await isSubscriptionAvailable();
+      console.log(chalk.white(`Subscription Auth: ${subscriptionAvailable ? chalk.green('✓ Authenticated') : chalk.red('✗ Not authenticated (run: claude login)')}`));
+    }
+
+    console.log(chalk.white(`OpenAI API Key: ${process.env.OPENAI_API_KEY ? chalk.green('✓ Set') : chalk.yellow('○ Not set (voice disabled)')}`));
+    console.log(chalk.white(`Min Sources: ${process.env.MIN_SOURCES_PER_TOPIC || '10'}`));
+    console.log(chalk.white(`Max Search Depth: ${process.env.MAX_SEARCH_DEPTH || '3'}`));
+    console.log(chalk.white(`Voice Enabled: ${process.env.ENABLE_VOICE === 'true' ? chalk.green('Yes') : chalk.gray('No')}`));
+    console.log(chalk.white(`Output Directory: ${process.env.OUTPUT_DIR || './output'}`));
+    console.log(chalk.white(`Output Format: ${process.env.OUTPUT_FORMAT || 'markdown'}`));
 
     console.log(chalk.gray('─'.repeat(50)));
+
+    // Show usage examples
+    console.log(chalk.bold('\n📖 Usage Examples:\n'));
+    console.log(chalk.gray('  Using API key:'));
+    console.log(chalk.cyan('    oracle research "your query"'));
+    console.log(chalk.gray('\n  Using Claude subscription:'));
+    console.log(chalk.cyan('    claude login                           # First authenticate'));
+    console.log(chalk.cyan('    oracle research -p subscription "your query"'));
     console.log('');
   });
 
@@ -181,12 +206,22 @@ program.parse();
  * Create configuration from options and environment
  */
 function createConfig(options: any): ResearchConfig {
+  const providerMode = (options.provider || process.env.PROVIDER_MODE || 'api-key') as ProviderConfig['mode'];
   const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
 
-  if (!anthropicApiKey) {
+  // Validate API key requirement based on provider mode
+  if (providerMode === 'api-key' && !anthropicApiKey) {
     console.error(chalk.red('\n❌ Error: ANTHROPIC_API_KEY not set'));
-    console.log(chalk.yellow('Please set your API key in .env file or environment\n'));
+    console.log(chalk.yellow('Please set your API key in .env file or environment'));
+    console.log(chalk.gray('\nAlternatively, use --provider subscription to authenticate via Claude Code CLI:\n'));
+    console.log(chalk.cyan('  claude login          # Authenticate with your Claude subscription'));
+    console.log(chalk.cyan('  oracle research -p subscription "your query"\n'));
     process.exit(1);
+  }
+
+  if (providerMode === 'subscription') {
+    console.log(chalk.cyan('📡 Using Claude subscription mode (Claude Code CLI auth)\n'));
+    console.log(chalk.gray('Make sure you have authenticated with: claude login\n'));
   }
 
   return {
@@ -196,7 +231,10 @@ function createConfig(options: any): ResearchConfig {
     maxSearchDepth: parseInt(process.env.MAX_SEARCH_DEPTH || '3'),
     enableVoice: options.voice || process.env.ENABLE_VOICE === 'true',
     outputDir: options.output || process.env.OUTPUT_DIR || './output',
-    outputFormat: options.format || process.env.OUTPUT_FORMAT || 'markdown'
+    outputFormat: options.format || process.env.OUTPUT_FORMAT || 'markdown',
+    provider: {
+      mode: providerMode
+    }
   };
 }
 

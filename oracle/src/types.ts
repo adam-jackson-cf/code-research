@@ -2,14 +2,55 @@
  * Core types for Oracle Research Assistant
  */
 
+/**
+ * Provider configuration for LLM access
+ */
+export interface ProviderConfig {
+  /** Authentication mode: 'api-key' uses ANTHROPIC_API_KEY, 'subscription' uses Claude Code CLI auth */
+  mode: 'api-key' | 'subscription';
+}
+
+/**
+ * Options for LLM queries
+ */
+export interface QueryOptions {
+  /** Model to use: sonnet, haiku, or opus */
+  model?: 'sonnet' | 'haiku' | 'opus';
+  /** Tools the model is allowed to use */
+  allowedTools?: string[];
+  /** Subagent definitions for complex tasks */
+  agents?: Record<string, AgentDefinition>;
+}
+
+/**
+ * Subagent definition for multi-agent orchestration
+ */
+export interface AgentDefinition {
+  description: string;
+  prompt: string;
+  tools: string[];
+  model: 'sonnet' | 'haiku' | 'opus';
+}
+
+/**
+ * Result from an LLM query
+ */
+export interface QueryResult {
+  text: string;
+  provider: 'api-key' | 'subscription';
+}
+
 export interface ResearchConfig {
   minSourcesPerTopic: number;
   maxSearchDepth: number;
   enableVoice: boolean;
   outputDir: string;
   outputFormat: 'markdown' | 'json' | 'html';
-  anthropicApiKey: string;
+  /** Anthropic API key - required for 'api-key' mode, optional for 'subscription' mode */
+  anthropicApiKey?: string;
   openaiApiKey?: string;
+  /** Provider configuration for LLM access */
+  provider: ProviderConfig;
 }
 
 export interface ResearchRequest {

@@ -5,7 +5,7 @@
  * and manages the overall research workflow.
  */
 
-import { query } from '@anthropic-ai/claude-agent-sdk';
+import { query, createQueryFunction, getProviderDisplayName } from './provider.js';
 import type {
   ResearchConfig,
   ResearchRequest,
@@ -13,7 +13,8 @@ import type {
   SearchResult,
   AnalysisResult,
   ResearchReport,
-  OrchestratorState
+  OrchestratorState,
+  QueryOptions
 } from './types.js';
 import { OutputFormatter } from './formatter.js';
 
@@ -39,6 +40,7 @@ export class ResearchOrchestrator {
   async conductResearch(request: ResearchRequest): Promise<ResearchReport> {
     try {
       this.log('🔮 Oracle Research Assistant initiated');
+      this.log(`📡 Using provider: ${getProviderDisplayName(this.config.provider.mode)}`);
       this.updateState('planning', 'Creating research plan', 10);
 
       // Phase 1: Planning
@@ -102,17 +104,17 @@ Respond in JSON format with the following structure:
   "approach": "string describing the research methodology"
 }`;
 
-    const result = await query({
-      prompt: planningPrompt,
-      options: {
+    const result = await query(
+      planningPrompt,
+      {
         model: 'sonnet',
         allowedTools: []  // Planning doesn't need tools
-      }
-    });
+      },
+      this.config.provider
+    );
 
     // Parse the JSON response
-    const resultString = typeof result === 'string' ? result : String(result);
-    const jsonMatch = resultString.match(/\{[\s\S]*\}/);
+    const jsonMatch = result.text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error('Failed to parse research plan');
     }
@@ -146,9 +148,9 @@ For each sub-topic:
 
 Use the search-specialist agent to perform thorough research. Return results in structured JSON format for each sub-topic.`;
 
-    const result = await query({
-      prompt: searchPrompt,
-      options: {
+    const result = await query(
+      searchPrompt,
+      {
         model: 'sonnet',
         allowedTools: ['WebSearch', 'WebFetch'],
         agents: {
@@ -159,12 +161,12 @@ Use the search-specialist agent to perform thorough research. Return results in 
             model: 'sonnet'
           }
         }
-      }
-    });
+      },
+      this.config.provider
+    );
 
     // Parse search results (simplified - in production, would have more robust parsing)
-    const resultString = typeof result === 'string' ? result : String(result);
-    return this.parseSearchResults(resultString, plan.subTopics);
+    return this.parseSearchResults(result.text, plan.subTopics);
   }
 
   /**
@@ -188,9 +190,9 @@ Your analysis should:
 
 Use the analysis-expert agent to perform thorough analysis. Return structured JSON with findings, contradictions, patterns, and confidence assessment.`;
 
-    const result = await query({
-      prompt: analysisPrompt,
-      options: {
+    const result = await query(
+      analysisPrompt,
+      {
         model: 'sonnet',
         allowedTools: [],
         agents: {
@@ -201,11 +203,11 @@ Use the analysis-expert agent to perform thorough analysis. Return structured JS
             model: 'sonnet'
           }
         }
-      }
-    });
+      },
+      this.config.provider
+    );
 
-    const resultString = typeof result === 'string' ? result : String(result);
-    return this.parseAnalysisResults(resultString);
+    return this.parseAnalysisResults(result.text);
   }
 
   /**
@@ -239,9 +241,9 @@ Create a well-structured report with:
 
 Use the synthesis-master agent to create a compelling, coherent report. Return in structured format with clear sections, proper citations, and actionable insights.`;
 
-    const result = await query({
-      prompt: synthesisPrompt,
-      options: {
+    const result = await query(
+      synthesisPrompt,
+      {
         model: 'sonnet',
         allowedTools: [],
         agents: {
@@ -252,11 +254,11 @@ Use the synthesis-master agent to create a compelling, coherent report. Return i
             model: 'sonnet'
           }
         }
-      }
-    });
+      },
+      this.config.provider
+    );
 
-    const resultString = typeof result === 'string' ? result : String(result);
-    return this.parseSynthesisResults(resultString, topic, searchResults);
+    return this.parseSynthesisResults(result.text, topic, searchResults);
   }
 
   /**
