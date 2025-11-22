@@ -70,17 +70,22 @@ ANTHROPIC_API_KEY=your_anthropic_api_key_here
 Use your Claude subscription (Pro or Max) via the Claude Code CLI:
 
 ```bash
-# Install Claude Code CLI globally
+# Install Claude Code CLI globally (for authentication)
 npm install -g @anthropic-ai/claude-code
 
 # Authenticate with your subscription
 claude login
+# Select "Log in with your subscription account" when prompted
 
 # Run Oracle with subscription mode
 npm run research -- -p subscription "your research query"
 ```
 
 No API key required when using subscription mode!
+
+> **Note:** The Claude Code CLI (`@anthropic-ai/claude-code`) is used for authentication only.
+> Oracle internally uses `ai-sdk-provider-claude-code` (already included in dependencies) to
+> make API calls using the CLI's stored credentials. You don't need to install this separately.
 
 ### Full Configuration Options
 

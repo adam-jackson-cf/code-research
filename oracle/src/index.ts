@@ -51,8 +51,27 @@ export async function research(query: string, options?: {
 
   const providerMode = options?.provider?.mode || 'api-key';
 
+  // Validate provider mode
+  if (providerMode !== 'api-key' && providerMode !== 'subscription') {
+    throw new Error(
+      `Invalid provider mode '${providerMode}'. Valid options are: 'api-key', 'subscription'`
+    );
+  }
+
+  const anthropicApiKey = options?.anthropicApiKey || process.env.ANTHROPIC_API_KEY;
+
+  // Validate API key requirement for api-key mode
+  if (providerMode === 'api-key' && !anthropicApiKey) {
+    throw new Error(
+      'ANTHROPIC_API_KEY is required for api-key mode. ' +
+      'Either provide it via options.anthropicApiKey or set the ANTHROPIC_API_KEY environment variable. ' +
+      'Alternatively, use provider: { mode: "subscription" } with Claude Code CLI authentication.'
+    );
+  }
+
   const config = {
-    anthropicApiKey: options?.anthropicApiKey || process.env.ANTHROPIC_API_KEY,
+    // Only include API key for api-key mode
+    anthropicApiKey: providerMode === 'api-key' ? anthropicApiKey : undefined,
     openaiApiKey: options?.openaiApiKey || process.env.OPENAI_API_KEY,
     minSourcesPerTopic: options?.minSources || 10,
     maxSearchDepth: 3,
