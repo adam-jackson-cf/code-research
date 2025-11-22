@@ -53,11 +53,29 @@ async function queryWithApiKey(
 
 /**
  * Query using subscription mode (Claude Code CLI auth via ai-sdk-provider-claude-code)
+ *
+ * Note: Subscription mode has limited support for tools and agents compared to API key mode.
+ * Tool calls and multi-agent orchestration may behave differently or have reduced functionality.
  */
 async function queryWithSubscription(
   prompt: string,
   options: QueryOptions
 ): Promise<QueryResult> {
+  // Warn about limited tool/agent support in subscription mode
+  if (options.allowedTools && options.allowedTools.length > 0) {
+    console.warn(
+      '[provider] Warning: Tool support in subscription mode is limited. ' +
+      'Some tools may not work as expected. Consider using api-key mode for full tool support.'
+    );
+  }
+
+  if (options.agents && Object.keys(options.agents).length > 0) {
+    console.warn(
+      '[provider] Warning: Multi-agent orchestration in subscription mode is limited. ' +
+      'Agent delegation may not work as expected. Consider using api-key mode for full agent support.'
+    );
+  }
+
   // Map model names to claude-code provider
   const model = claudeCode(options.model || 'sonnet', {
     // Enable tools if specified
@@ -66,23 +84,52 @@ async function queryWithSubscription(
     })
   });
 
-  const { text } = await generateText({
-    model,
-    prompt,
-    // Note: For subscription mode, tool use and agents work through the
-    // Claude Code CLI's native capabilities
-  });
+  try {
+    const { text } = await generateText({
+      model,
+      prompt
+    });
 
-  return {
-    text,
-    provider: 'subscription'
-  };
+    return {
+      text,
+      provider: 'subscription'
+    };
+  } catch (error) {
+    // Provide more helpful error messages for subscription mode failures
+    const errorMessage = error instanceof Error ? error.message : String(error);
+
+    if (errorMessage.includes('auth') || errorMessage.includes('login') || errorMessage.includes('unauthorized')) {
+      throw new Error(
+        `Subscription authentication failed. Please run 'claude login' to authenticate. Original error: ${errorMessage}`
+      );
+    }
+
+    throw error;
+  }
+}
+
+/**
+ * Result of subscription availability check
+ */
+export interface SubscriptionCheckResult {
+  available: boolean;
+  error?: 'auth_failed' | 'network_error' | 'unknown';
+  message?: string;
 }
 
 /**
  * Check if subscription mode is available (Claude Code CLI is authenticated)
+ * Returns detailed information about the check result to distinguish auth failures from network issues.
  */
 export async function isSubscriptionAvailable(): Promise<boolean> {
+  const result = await checkSubscriptionStatus();
+  return result.available;
+}
+
+/**
+ * Detailed subscription status check with error categorization
+ */
+export async function checkSubscriptionStatus(): Promise<SubscriptionCheckResult> {
   try {
     // Try a minimal query to check if auth is working
     const model = claudeCode('haiku');
@@ -90,9 +137,37 @@ export async function isSubscriptionAvailable(): Promise<boolean> {
       model,
       prompt: 'Say "ok"'
     });
-    return true;
-  } catch {
-    return false;
+    return { available: true };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const lowerMessage = errorMessage.toLowerCase();
+
+    // Categorize the error
+    if (lowerMessage.includes('auth') || lowerMessage.includes('login') ||
+        lowerMessage.includes('unauthorized') || lowerMessage.includes('unauthenticated') ||
+        lowerMessage.includes('credential') || lowerMessage.includes('token')) {
+      return {
+        available: false,
+        error: 'auth_failed',
+        message: 'Not authenticated. Run "claude login" to authenticate with your subscription.'
+      };
+    }
+
+    if (lowerMessage.includes('network') || lowerMessage.includes('econnrefused') ||
+        lowerMessage.includes('timeout') || lowerMessage.includes('enotfound') ||
+        lowerMessage.includes('socket')) {
+      return {
+        available: false,
+        error: 'network_error',
+        message: 'Network error. Check your internet connection and try again.'
+      };
+    }
+
+    return {
+      available: false,
+      error: 'unknown',
+      message: `Subscription check failed: ${errorMessage}`
+    };
   }
 }
 

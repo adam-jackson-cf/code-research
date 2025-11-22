@@ -7,6 +7,12 @@
 export { ResearchOrchestrator } from './orchestrator.js';
 export { VoiceInterface } from './voice.js';
 export { OutputFormatter } from './formatter.js';
+export {
+  isSubscriptionAvailable,
+  checkSubscriptionStatus,
+  getProviderDisplayName
+} from './provider.js';
+export type { SubscriptionCheckResult } from './provider.js';
 
 export type {
   ResearchConfig,

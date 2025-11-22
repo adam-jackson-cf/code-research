@@ -10,7 +10,7 @@ import chalk from 'chalk';
 import { ResearchOrchestrator } from './orchestrator.js';
 import { VoiceInterface } from './voice.js';
 import { OutputFormatter } from './formatter.js';
-import { isSubscriptionAvailable, getProviderDisplayName } from './provider.js';
+import { isSubscriptionAvailable, getProviderDisplayName, checkSubscriptionStatus } from './provider.js';
 import type { ResearchConfig, ResearchRequest, ProviderConfig } from './types.js';
 import * as readline from 'readline';
 
@@ -161,7 +161,16 @@ program
   .description('Display current configuration')
   .option('-p, --provider <mode>', 'Provider mode to check', 'api-key')
   .action(async (options) => {
-    const providerMode = (options.provider || process.env.PROVIDER_MODE || 'api-key') as ProviderConfig['mode'];
+    const rawProviderMode = options.provider || process.env.PROVIDER_MODE || 'api-key';
+
+    // Validate provider mode
+    if (rawProviderMode !== 'api-key' && rawProviderMode !== 'subscription') {
+      console.error(chalk.red(`\n❌ Error: Invalid provider mode '${rawProviderMode}'`));
+      console.log(chalk.yellow('Valid options are: api-key, subscription\n'));
+      process.exit(1);
+    }
+
+    const providerMode = rawProviderMode as ProviderConfig['mode'];
     const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
 
     console.log(chalk.bold.cyan('\n⚙️  Oracle Configuration\n'));
@@ -175,10 +184,16 @@ program
       console.log(chalk.white(`Anthropic API Key: ${anthropicApiKey ? chalk.green('✓ Set') : chalk.red('✗ Not set (required)')}`));
     } else {
       console.log(chalk.white(`Anthropic API Key: ${anthropicApiKey ? chalk.green('✓ Set') : chalk.gray('○ Not required (using subscription)')}`));
-      // Check subscription availability
+      // Check subscription availability with detailed status
       console.log(chalk.white('Checking subscription auth...'));
-      const subscriptionAvailable = await isSubscriptionAvailable();
-      console.log(chalk.white(`Subscription Auth: ${subscriptionAvailable ? chalk.green('✓ Authenticated') : chalk.red('✗ Not authenticated (run: claude login)')}`));
+      const subscriptionStatus = await checkSubscriptionStatus();
+      if (subscriptionStatus.available) {
+        console.log(chalk.white(`Subscription Auth: ${chalk.green('✓ Authenticated')}`));
+      } else {
+        const errorIcon = subscriptionStatus.error === 'network_error' ? '⚠' : '✗';
+        const errorColor = subscriptionStatus.error === 'network_error' ? chalk.yellow : chalk.red;
+        console.log(chalk.white(`Subscription Auth: ${errorColor(`${errorIcon} ${subscriptionStatus.message}`)}`));
+      }
     }
 
     console.log(chalk.white(`OpenAI API Key: ${process.env.OPENAI_API_KEY ? chalk.green('✓ Set') : chalk.yellow('○ Not set (voice disabled)')}`));
@@ -206,7 +221,16 @@ program.parse();
  * Create configuration from options and environment
  */
 function createConfig(options: any): ResearchConfig {
-  const providerMode = (options.provider || process.env.PROVIDER_MODE || 'api-key') as ProviderConfig['mode'];
+  const rawProviderMode = options.provider || process.env.PROVIDER_MODE || 'api-key';
+
+  // Validate provider mode
+  if (rawProviderMode !== 'api-key' && rawProviderMode !== 'subscription') {
+    console.error(chalk.red(`\n❌ Error: Invalid provider mode '${rawProviderMode}'`));
+    console.log(chalk.yellow('Valid options are: api-key, subscription\n'));
+    process.exit(1);
+  }
+
+  const providerMode = rawProviderMode as ProviderConfig['mode'];
   const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
 
   // Validate API key requirement based on provider mode
@@ -225,7 +249,8 @@ function createConfig(options: any): ResearchConfig {
   }
 
   return {
-    anthropicApiKey,
+    // Only include API key for api-key mode
+    anthropicApiKey: providerMode === 'api-key' ? anthropicApiKey : undefined,
     openaiApiKey: process.env.OPENAI_API_KEY,
     minSourcesPerTopic: parseInt(options.minSources || process.env.MIN_SOURCES_PER_TOPIC || '10'),
     maxSearchDepth: parseInt(process.env.MAX_SEARCH_DEPTH || '3'),
