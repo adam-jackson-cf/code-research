@@ -1,0 +1,43 @@
+# Agent Sandbox Local Configuration
+# Backend selection: 'orbstack' or 'tmux'
+
+backend:
+  default: orbstack
+  fallback: tmux
+
+# OrbStack (Docker) configuration
+orbstack:
+  image_prefix: agent-sandbox
+  workspace_dir: ~/.agent-sandbox/orbstack-workspaces
+  cleanup_workspace: false
+  resource_limits:
+    memory: 512m
+    cpu_period: 100000
+    cpu_quota: 50000  # 0.5 CPU
+  network:
+    port_range_start: 8000
+    port_range_end: 9000
+
+# Tmux configuration
+tmux:
+  workspace_dir: ~/.agent-sandbox/tmux-workspaces
+  capture_dir: ~/.agent-sandbox/tmux-captures
+  cleanup_workspace: false
+  orchestrator:
+    check_interval: 5
+    log_file: ~/.agent-sandbox/orchestrator.log
+  capture:
+    buffer_size: 10000
+    history_file: true
+
+# Logging configuration
+logging:
+  level: INFO
+  file: ~/.agent-sandbox/sandbox-cli.log
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Timeout defaults (in seconds)
+timeouts:
+  default_sandbox: 1800  # 30 minutes
+  default_command: 60    # 1 minute
+  max_sandbox: 7200      # 2 hours

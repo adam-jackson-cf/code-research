@@ -1,0 +1,21 @@
+# Node.js image - Node 22 with npm
+FROM node:22-alpine
+
+# Install utilities
+RUN apk add --no-cache \
+    bash \
+    coreutils \
+    curl \
+    git \
+    ca-certificates \
+    sqlite \
+    jq \
+    && rm -rf /var/cache/apk/*
+
+# Create workspace directory
+RUN mkdir -p /workspace && chmod 777 /workspace
+
+WORKDIR /workspace
+
+# Keep container running
+CMD ["/bin/bash"]

@@ -1,0 +1,21 @@
+# Base image - minimal Alpine with core utilities
+FROM alpine:3.19
+
+# Install core utilities
+RUN apk add --no-cache \
+    bash \
+    coreutils \
+    curl \
+    git \
+    ca-certificates \
+    sqlite \
+    jq \
+    && rm -rf /var/cache/apk/*
+
+# Create workspace directory
+RUN mkdir -p /workspace && chmod 777 /workspace
+
+WORKDIR /workspace
+
+# Keep container running
+CMD ["/bin/bash"]

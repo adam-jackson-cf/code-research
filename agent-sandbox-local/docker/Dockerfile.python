@@ -1,0 +1,26 @@
+# Python image - Python 3.12 with uv package manager
+FROM python:3.12-alpine
+
+# Install utilities
+RUN apk add --no-cache \
+    bash \
+    coreutils \
+    curl \
+    git \
+    ca-certificates \
+    sqlite \
+    jq \
+    build-base \
+    && rm -rf /var/cache/apk/*
+
+# Install uv package manager
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
+
+# Create workspace directory
+RUN mkdir -p /workspace && chmod 777 /workspace
+
+WORKDIR /workspace
+
+# Keep container running
+CMD ["/bin/bash"]
