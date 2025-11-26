@@ -26,8 +26,8 @@ describe('GitHub API Integration', () => {
   let client: GitHubClient;
 
   beforeAll(() => {
-    // Create client without auth for public repo access
-    client = createGitHubClient({});
+    // Create client with token from environment for higher rate limits
+    client = createGitHubClient({ token: process.env.GITHUB_TOKEN });
   });
 
   describe('Repository Parsing', () => {
@@ -127,7 +127,7 @@ describe('GitHub API Integration', () => {
 
 describe('End-to-End DORA Metrics Calculation', () => {
   it('calculates DORA metrics from real GitHub data', async () => {
-    const client = createGitHubClient({});
+    const client = createGitHubClient({ token: process.env.GITHUB_TOKEN });
     const repo = client.parseRepoString(TEST_REPO);
 
     // Fetch data
@@ -183,11 +183,10 @@ describe('End-to-End DORA Metrics Calculation', () => {
 });
 
 describe('Multiple Repository Comparison', () => {
-  // Skip this test by default as it consumes significant API quota
-  // Run manually with GITHUB_TOKEN set for authenticated requests
-  it.skip('can fetch data from multiple public repositories', async () => {
+  // Requires GITHUB_TOKEN for authenticated requests (higher rate limits)
+  it('can fetch data from multiple public repositories', async () => {
     const repos = ['facebook/react', 'vercel/next.js', 'microsoft/vscode'];
-    const client = createGitHubClient({});
+    const client = createGitHubClient({ token: process.env.GITHUB_TOKEN });
     const results: Map<string, { prCount: number; workflowCount: number }> = new Map();
 
     for (const repoStr of repos) {
@@ -219,10 +218,9 @@ describe('Multiple Repository Comparison', () => {
 });
 
 describe('Data Quality Validation', () => {
-  // Skip these tests by default to conserve API quota
-  // Data validation is covered by the E2E test
-  it.skip('validates PR data has required fields', async () => {
-    const client = createGitHubClient({});
+  // Requires GITHUB_TOKEN for authenticated requests (higher rate limits)
+  it('validates PR data has required fields', async () => {
+    const client = createGitHubClient({ token: process.env.GITHUB_TOKEN });
     const repo = client.parseRepoString(TEST_REPO);
     const pullRequests = await client.fetchMergedPullRequests(repo, SHORT_PERIOD);
 
@@ -241,8 +239,8 @@ describe('Data Quality Validation', () => {
     });
   }, 30000);
 
-  it.skip('validates deployment data has required fields', async () => {
-    const client = createGitHubClient({});
+  it('validates deployment data has required fields', async () => {
+    const client = createGitHubClient({ token: process.env.GITHUB_TOKEN });
     const repo = client.parseRepoString(TEST_REPO);
     const workflows = await client.fetchWorkflowRuns(repo, SHORT_PERIOD);
     const deployments = client.convertWorkflowsToDeployments(workflows);
