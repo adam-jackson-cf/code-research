@@ -58,15 +58,26 @@ browser-nav.js http://localhost:3000/component-page
 For each viewport size:
 
 ```bash
-# Resize viewport (via eval)
-browser-eval.js 'window.resizeTo(375, 812)'  # Mobile
-browser-screenshot.js
+# Note: window.resizeTo() only works on windows opened by window.open() and
+# won't work in modern browsers for security reasons. Instead, use one of these approaches:
 
-browser-eval.js 'window.resizeTo(768, 1024)'  # Tablet
-browser-screenshot.js
+# Option 1: If using dedicated screenshot tools with viewport support
+browser-screenshot.js --viewport 375x812   # Mobile (if supported by your tooling)
+browser-screenshot.js --viewport 768x1024  # Tablet
+browser-screenshot.js --viewport 1440x900  # Desktop
 
-browser-eval.js 'window.resizeTo(1440, 900)'  # Desktop
-browser-screenshot.js
+# Option 2: Use Puppeteer/Playwright for viewport control via DevTools Protocol
+# Example using Puppeteer (Node.js):
+# node -e "const puppeteer = require('puppeteer'); (async () => {
+#   const browser = await puppeteer.connect({browserURL: 'http://localhost:9222'});
+#   const [page] = await browser.pages();
+#   await page.setViewport({width: 375, height: 812});
+#   await page.screenshot({path: 'mobile.png'});
+#   await browser.disconnect();
+# })()"
+
+# Option 3: Test each viewport size in separate browser sessions or use CSS media query testing
+browser-screenshot.js  # Take screenshot at current viewport
 ```
 
 ### 3. Capture Interactive States

@@ -164,7 +164,7 @@ For complex designs:
 2. Start with layout structure
 3. Add details progressively
 
-### 5. Minimize OAuth Scopes
+### 5. Minimize Token Scopes
 
 Request only necessary permissions:
 - Use `files:read` for implementation

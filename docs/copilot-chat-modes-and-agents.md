@@ -81,7 +81,9 @@ tools:
 mcp-servers:
   figma:
     command: npx
-    args: ["-y", "figma-developer-mcp", "--figma-api-key=${FIGMA_API_KEY}", "--stdio"]
+    args: ["-y", "figma-developer-mcp", "--stdio"]
+    env:
+      FIGMA_API_KEY: "${FIGMA_API_KEY}"
 ---
 ```
 

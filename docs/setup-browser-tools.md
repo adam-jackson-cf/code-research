@@ -184,7 +184,7 @@ export PATH="$PATH:$HOME/.local/bin"
 Set up an alias for Claude sessions:
 
 ```bash
-alias cl="PATH=$PATH:$HOME/.local/bin/browser-tools claude --dangerously-skip-permissions"
+alias cl="PATH=$PATH:$HOME/.local/bin claude --dangerously-skip-permissions"
 ```
 
 ### Example Agent Workflow

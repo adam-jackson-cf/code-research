@@ -38,7 +38,7 @@ Agents defined at the organization level, shared across repositories.
 ### File Structure
 
 ```markdown
-# .github/agents/frontend-expert.md
+# .github/agents/frontend-expert.agent.md
 
 ---
 name: frontend-expert
@@ -50,7 +50,9 @@ tools:
 mcp-servers:
   figma:
     command: npx
-    args: ["-y", "figma-developer-mcp", "--figma-api-key=${FIGMA_API_KEY}"]
+    args: ["-y", "figma-developer-mcp", "--stdio"]
+    env:
+      FIGMA_API_KEY: "${FIGMA_API_KEY}"
 ---
 
 You are a frontend development expert specializing in React and TypeScript.
@@ -333,7 +335,9 @@ tools:
 mcp-servers:
   figma:
     command: npx
-    args: ["-y", "figma-developer-mcp", "--figma-api-key=${FIGMA_API_KEY}"]
+    args: ["-y", "figma-developer-mcp", "--stdio"]
+    env:
+      FIGMA_API_KEY: "${FIGMA_API_KEY}"
 handoffs:
   - label: Verify Implementation
     agent: design-reviewer
