@@ -1,0 +1,17 @@
+# Reference repositories (cloned for porting)
+ai-assisted-workflows/
+
+# Node.js
+node_modules/
+dist/
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
