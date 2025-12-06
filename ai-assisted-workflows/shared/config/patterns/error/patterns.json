@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "patterns": {
+    "auth_bypass": {
+      "category": "security",
+      "description": "Potential authentication or authorization bypass",
+      "patterns": [
+        "(?:admin|role|permission)\\s*==?\\s*[\"\\'](?:true|1)[\"\\']",
+        "(?:if|while)\\s*\\(\\s*true\\s*\\).*(?:auth|login|permission)",
+        "(?:auth|token|session)\\s*=\\s*null.*continue",
+        "(?:localStorage|sessionStorage)\\.(?:token|auth).*without.*verify"
+      ],
+      "severity": "critical"
+    },
+    "data_corruption": {
+      "category": "data_integrity",
+      "description": "Potential data corruption or invalid transformation",
+      "patterns": [
+        "(?:parseInt|parseFloat)\\([^)]*\\)(?!\\s*(?:isNaN|\\|\\||&&))",
+        "(?:slice|substring|substr)\\([^)]*\\)(?!\\s*(?:length|check))",
+        "(?:push|unshift).*(?:splice|pop|shift)",
+        "(?:JSON\\.parse).*(?:JSON\\.stringify).*(?:JSON\\.parse)"
+      ],
+      "severity": "medium"
+    },
+    "injection_vulnerability": {
+      "category": "security",
+      "description": "Potential injection vulnerability",
+      "patterns": [
+        "(?:query|cursor\\.execute).*\\+.*(?:user_input|request\\.|params\\.|input\\()",
+        "eval\\s*\\(\\s*(?:user_input|request\\.|params\\.|input\\()",
+        "exec\\s*\\(\\s*(?:user_input|request\\.|params\\.|input\\()",
+        "(?:subprocess|os\\.system|os\\.popen)\\s*\\(\\s*.*(?:user_input|request\\.|params\\.|input\\()"
+      ],
+      "severity": "critical"
+    },
+    "memory_leak": {
+      "category": "resource_management",
+      "description": "Potential memory leak or resource not properly released",
+      "patterns": [
+        "(?:new|malloc|alloc).*without.*(?:delete|free)",
+        "addEventListener.*without.*removeEventListener",
+        "setInterval|setTimeout.*without.*clear",
+        "open\\([^)]*\\).*without.*close\\(\\)"
+      ],
+      "severity": "high"
+    },
+    "null_pointer": {
+      "category": "null_safety",
+      "description": "Potential null/undefined access or missing error handling",
+      "patterns": [
+        "(?:user_input|request\\.|params\\.|query\\.)\\w+(?:\\.\\w+)*(?!\\s*(?:and|or|if|is|==|!=))",
+        "(?:JSON\\.parse|parseInt|parseFloat)\\([^)]*\\)(?!\\s*(?:try|catch|\\}|\\)))"
+      ],
+      "severity": "medium"
+    },
+    "performance_issue": {
+      "category": "performance",
+      "description": "Performance anti-pattern that may cause bottlenecks",
+      "patterns": [
+        "for.*for.*for",
+        "(?:forEach|map|filter).*(?:forEach|map|filter).*(?:forEach|map|filter)",
+        "(?:getElementById|querySelector).*(?:for|while)",
+        "(?:JSON\\.parse|JSON\\.stringify).*(?:for|while)",
+        "(?:split|replace|match).*(?:for|while)"
+      ],
+      "severity": "medium"
+    },
+    "poor_error_handling": {
+      "category": "error_handling",
+      "description": "Poor error handling that may hide issues",
+      "patterns": [
+        "catch\\s*\\([^)]*\\)\\s*\\{\\s*\\}",
+        "catch.*console\\.log",
+        "try\\s*\\{[^}]*\\}\\s*catch\\s*\\([^)]*\\)\\s*\\{\\s*return",
+        "throw\\s+(?:new\\s+)?Error\\(\\s*[\"\\'][\"\\']\\s*\\)"
+      ],
+      "severity": "medium"
+    },
+    "race_condition": {
+      "category": "concurrency",
+      "description": "Potential race condition or unsafe concurrent access",
+      "patterns": [
+        "(?:async|await).*(?:for|while).*(?:async|await)",
+        "Promise\\.all.*(?:await|then).*(?:await|then)",
+        "(?:setTimeout|setInterval).*(?:state|this\\.)",
+        "(?:global|window|document)\\.\\w+\\s*=.*(?:async|setTimeout)"
+      ],
+      "severity": "high"
+    },
+    "state_mutation": {
+      "category": "state_management",
+      "description": "Direct state mutation that may cause rendering issues",
+      "patterns": [
+        "(?:state|props)\\.\\w+\\s*=",
+        "(?:push|pop|splice|sort|reverse)\\s*\\(.*(?:state|props)",
+        "Object\\.assign\\s*\\(\\s*(?:state|props)",
+        "(?:state|props)\\[\\w+\\]\\s*="
+      ],
+      "severity": "medium"
+    }
+  }
+}

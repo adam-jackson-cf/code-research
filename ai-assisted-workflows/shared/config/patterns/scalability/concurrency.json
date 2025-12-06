@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "patterns": {
+    "blocking_operations": {
+      "description": "Blocking operation that may affect scalability",
+      "indicators": [
+        "\\.join\\(\\)",
+        "\\.wait\\(\\)",
+        "input\\(\\)",
+        "raw_input\\(\\)",
+        "time\\.sleep\\("
+      ],
+      "severity": "medium"
+    },
+    "resource_contention": {
+      "description": "Resource locking that may limit scalability",
+      "indicators": [
+        "lock\\s*=\\s*",
+        "Lock\\(\\)",
+        "RLock\\(\\)",
+        "Semaphore\\(",
+        "mutex"
+      ],
+      "severity": "medium"
+    },
+    "thread_safety": {
+      "description": "Potential thread safety issue",
+      "indicators": [
+        "global\\s+\\w+",
+        "class\\s+\\w+.*:\\s*\\n.*\\w+\\s*=\\s*\\[\\]",
+        "threading\\.Thread",
+        "multiprocessing\\."
+      ],
+      "severity": "high"
+    }
+  }
+}

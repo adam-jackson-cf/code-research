@@ -1,0 +1,334 @@
+{
+  "schema_version": 1,
+  "languages": {
+    "python": {
+      "extensions": [
+        ".py"
+      ],
+      "test_patterns": [
+        "test_.*\\.py$",
+        ".*_test\\.py$",
+        "tests?/.*\\.py$"
+      ],
+      "source_patterns": [
+        ".*\\.py$"
+      ],
+      "coverage_tools": [
+        "coverage",
+        "pytest-cov"
+      ],
+      "coverage_files": [
+        ".coverage",
+        "coverage.xml",
+        "htmlcov/"
+      ],
+      "exclude_dirs": [
+        "__pycache__",
+        ".pytest_cache",
+        "venv",
+        ".venv"
+      ]
+    },
+    "javascript": {
+      "extensions": [
+        ".js",
+        ".jsx"
+      ],
+      "test_patterns": [
+        ".*\\.test\\.js$",
+        ".*\\.spec\\.js$",
+        "__tests__/.*\\.js$",
+        "tests?/.*\\.js$"
+      ],
+      "source_patterns": [
+        ".*\\.js$",
+        ".*\\.jsx$"
+      ],
+      "coverage_tools": [
+        "jest",
+        "nyc",
+        "c8"
+      ],
+      "coverage_files": [
+        "coverage/",
+        ".nyc_output/",
+        "coverage.json"
+      ],
+      "exclude_dirs": [
+        "node_modules",
+        "coverage",
+        "dist",
+        "build"
+      ]
+    },
+    "typescript": {
+      "extensions": [
+        ".ts",
+        ".tsx"
+      ],
+      "test_patterns": [
+        ".*\\.test\\.ts$",
+        ".*\\.spec\\.ts$",
+        "__tests__/.*\\.ts$"
+      ],
+      "source_patterns": [
+        ".*\\.ts$",
+        ".*\\.tsx$"
+      ],
+      "coverage_tools": [
+        "jest",
+        "nyc",
+        "c8"
+      ],
+      "coverage_files": [
+        "coverage/",
+        ".nyc_output/",
+        "coverage.json"
+      ],
+      "exclude_dirs": [
+        "node_modules",
+        "coverage",
+        "dist",
+        "build"
+      ]
+    },
+    "java": {
+      "extensions": [
+        ".java"
+      ],
+      "test_patterns": [
+        ".*Test\\.java$",
+        ".*Tests\\.java$",
+        "src/test/.*\\.java$"
+      ],
+      "source_patterns": [
+        ".*\\.java$"
+      ],
+      "coverage_tools": [
+        "jacoco",
+        "cobertura"
+      ],
+      "coverage_files": [
+        "target/site/jacoco/",
+        "target/cobertura/"
+      ],
+      "exclude_dirs": [
+        "target",
+        ".gradle",
+        "build"
+      ]
+    },
+    "go": {
+      "extensions": [
+        ".go"
+      ],
+      "test_patterns": [
+        ".*_test\\.go$"
+      ],
+      "source_patterns": [
+        ".*\\.go$"
+      ],
+      "coverage_tools": [
+        "go test"
+      ],
+      "coverage_files": [
+        "coverage.out",
+        "coverage.html"
+      ],
+      "exclude_dirs": [
+        "vendor/"
+      ]
+    },
+    "rust": {
+      "extensions": [
+        ".rs"
+      ],
+      "test_patterns": [
+        "tests/.*\\.rs$",
+        ".*\\.rs$"
+      ],
+      "source_patterns": [
+        ".*\\.rs$"
+      ],
+      "coverage_tools": [
+        "tarpaulin",
+        "grcov"
+      ],
+      "coverage_files": [
+        "target/tarpaulin/",
+        "target/debug/coverage/"
+      ],
+      "exclude_dirs": [
+        "target/"
+      ]
+    },
+    "csharp": {
+      "extensions": [
+        ".cs"
+      ],
+      "test_patterns": [
+        ".*Test\\.cs$",
+        ".*Tests\\.cs$",
+        ".*\\.Tests/.*\\.cs$"
+      ],
+      "source_patterns": [
+        ".*\\.cs$"
+      ],
+      "coverage_tools": [
+        "coverlet",
+        "dotcover"
+      ],
+      "coverage_files": [
+        "coverage.xml",
+        "TestResults/"
+      ],
+      "exclude_dirs": [
+        "bin/",
+        "obj/",
+        "packages/"
+      ]
+    },
+    "ruby": {
+      "extensions": [
+        ".rb"
+      ],
+      "test_patterns": [
+        ".*_test\\.rb$",
+        "test/.*\\.rb$",
+        "spec/.*\\.rb$"
+      ],
+      "source_patterns": [
+        ".*\\.rb$"
+      ],
+      "coverage_tools": [
+        "simplecov"
+      ],
+      "coverage_files": [
+        "coverage/",
+        ".resultset.json"
+      ],
+      "exclude_dirs": [
+        "vendor/",
+        "coverage/"
+      ]
+    },
+    "php": {
+      "extensions": [
+        ".php"
+      ],
+      "test_patterns": [
+        ".*Test\\.php$",
+        "tests/.*\\.php$"
+      ],
+      "source_patterns": [
+        ".*\\.php$"
+      ],
+      "coverage_tools": [
+        "phpunit",
+        "xdebug"
+      ],
+      "coverage_files": [
+        "coverage/",
+        "clover.xml"
+      ],
+      "exclude_dirs": [
+        "vendor/",
+        "coverage/"
+      ]
+    },
+    "cpp": {
+      "extensions": [
+        ".cpp",
+        ".cc",
+        ".cxx",
+        ".c++",
+        ".c",
+        ".h",
+        ".hpp"
+      ],
+      "test_patterns": [
+        ".*_test\\.cpp$",
+        ".*_test\\.cc$",
+        "test.*\\.cpp$",
+        "tests/.*\\.cpp$"
+      ],
+      "source_patterns": [
+        ".*\\.cpp$",
+        ".*\\.cc$",
+        ".*\\.cxx$",
+        ".*\\.c\\+\\+$"
+      ],
+      "coverage_tools": [
+        "gcov",
+        "lcov",
+        "llvm-cov"
+      ],
+      "coverage_files": [
+        "coverage.info",
+        "coverage/",
+        "coverage.xml"
+      ],
+      "exclude_dirs": [
+        "build/",
+        "cmake-build-*/",
+        ".vs/",
+        "Debug/",
+        "Release/"
+      ]
+    },
+    "swift": {
+      "extensions": [
+        ".swift"
+      ],
+      "test_patterns": [
+        ".*Tests\\.swift$",
+        ".*Test\\.swift$",
+        "Tests/.*\\.swift$"
+      ],
+      "source_patterns": [
+        ".*\\.swift$"
+      ],
+      "coverage_tools": [
+        "swift test",
+        "xccov"
+      ],
+      "coverage_files": [
+        ".build/debug/codecov/",
+        "DerivedData/"
+      ],
+      "exclude_dirs": [
+        ".build/",
+        "DerivedData/",
+        "Packages/"
+      ]
+    },
+    "kotlin": {
+      "extensions": [
+        ".kt",
+        ".kts"
+      ],
+      "test_patterns": [
+        ".*Test\\.kt$",
+        ".*Tests\\.kt$",
+        "src/test/.*\\.kt$"
+      ],
+      "source_patterns": [
+        ".*\\.kt$",
+        ".*\\.kts$"
+      ],
+      "coverage_tools": [
+        "jacoco",
+        "kover"
+      ],
+      "coverage_files": [
+        "build/reports/jacoco/",
+        "build/reports/kover/"
+      ],
+      "exclude_dirs": [
+        "build/",
+        ".gradle/",
+        "out/"
+      ]
+    }
+  }
+}

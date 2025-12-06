@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "languages": {
+    ".java": {
+      "patterns": [
+        "catch\\s*\\([^)]*\\)\\s*\\{\\s*e\\.printStackTrace\\(\\)",
+        "System\\.out\\.print",
+        "Thread\\.sleep"
+      ],
+      "severity": "medium"
+    },
+    ".js": {
+      "patterns": [
+        "==\\s*(?:null|undefined)",
+        "typeof.*==\\s*[\"\\']undefined[\"\\']",
+        "var\\s+"
+      ],
+      "severity": "low"
+    },
+    ".py": {
+      "patterns": [
+        "except\\s*:(?!\\s*(?:pass|raise))",
+        "import\\s+\\*",
+        "exec\\s*\\(",
+        "eval\\s*\\("
+      ],
+      "severity": "medium"
+    }
+  }
+}

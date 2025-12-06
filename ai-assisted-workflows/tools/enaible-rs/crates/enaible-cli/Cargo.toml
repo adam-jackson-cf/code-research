@@ -1,0 +1,37 @@
+[package]
+name = "enaible-cli"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "enaible"
+path = "src/main.rs"
+
+[dependencies]
+enaible-core = { workspace = true }
+enaible-prompts = { workspace = true }
+enaible-analyzers = { workspace = true }
+clap = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+colored = "2.0"
+env_logger = "0.10"
+log = "0.4"
+home = "0.5"
+
+[build-dependencies]
+clap = { workspace = true }
+clap_complete = "4.5"
+
+[dev-dependencies]
+tempfile = { workspace = true }
+pretty_assertions = { workspace = true }
+
+[[test]]
+name = "cli_integration"
+path = "tests/cli_integration.rs"

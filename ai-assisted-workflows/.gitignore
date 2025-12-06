@@ -1,0 +1,126 @@
+# AI-Assisted Workflows installation directory
+.claude/
+.enaible/
+.build/
+!.enaible/schema.json
+!.enaible/prompt-e2e/
+!.enaible/prompt-e2e/**
+
+# Evaluation system test workspaces and reports
+evaluation/workspaces/
+evaluation/reports/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+**/venv/lib/
+**/env/lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+Icon?
+.DocumentRevisions-V100
+.fseventsd
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.tmp
+*.temp
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Logs
+*.log
+/tmp/claude-workflows-install.log
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+.serena/cache/
+
+# Node.js (for MCP tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test directories
+/tmp/test-*
+test_codebase/.claude/
+/todos/worktrees/
+
+# Development history
+.specstory/
+
+# Beads task tracking database
+.beads/
+
+# cache files
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.serena/cache/
+
+# Coverage artifacts
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml

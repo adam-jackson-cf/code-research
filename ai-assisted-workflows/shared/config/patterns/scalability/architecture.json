@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "patterns": {
+    "hardcoded_config": {
+      "description": "Hardcoded configuration limits scalability",
+      "indicators": [
+        "host\\s*=\\s*['\\\"](?:localhost|127\\.0\\.0\\.1)['\\\"]",
+        "port\\s*=\\s*(?:3000|8080|5432|3306)(?!\\s*\\+|\\s*\\*)",
+        "password\\s*=\\s*['\\\"][^'\\\"]{6,}['\\\"]",
+        "(?:DATABASE_|DB_)URL\\s*=\\s*['\\\"](?:postgres|mysql|mongodb)://[^'\\\"]*['\\\"]",
+        "api_key\\s*=\\s*['\\\"][a-zA-Z0-9]{20,}['\\\"]"
+      ],
+      "severity": "high"
+    },
+    "single_responsibility": {
+      "description": "Violation of single responsibility principle",
+      "indicators": [
+        "class\\s+\\w+.*:\\s*(?:\\n.*){100,}",
+        "def\\s+\\w+.*:\\s*(?:\\n.*){50,}",
+        "def\\s+\\w+.*(?:and|or).*(?:and|or).*\\("
+      ],
+      "severity": "medium"
+    },
+    "tight_coupling": {
+      "description": "Tight coupling that may hinder scaling",
+      "indicators": [
+        "(?:import|from)\\s+\\w+\\.\\w+\\.\\w+\\.\\w+.*\\n(?:.*\\n){0,5}(?:import|from)\\s+\\w+\\.\\w+\\.\\w+\\.\\w+",
+        "\\w+\\.\\w+\\.\\w+\\.\\w+\\.\\w+\\(",
+        "\\w+\\.\\w+\\._\\w+\\.\\w+\\("
+      ],
+      "severity": "medium"
+    }
+  }
+}

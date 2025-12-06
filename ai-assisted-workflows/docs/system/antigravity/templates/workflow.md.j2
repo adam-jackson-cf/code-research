@@ -1,0 +1,9 @@
+---
+{% if frontmatter and frontmatter.get('description') %}description: "{{ frontmatter.description }}"
+{% endif %}---
+# {{ title }}
+
+{{ body }}
+Arguments: {{ '{{args}}' }}
+
+{{ managed_sentinel }}

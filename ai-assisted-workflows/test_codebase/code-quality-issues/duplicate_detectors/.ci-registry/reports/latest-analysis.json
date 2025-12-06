@@ -1,0 +1,127 @@
+{
+  "timestamp": 1756821104.0540779,
+  "analysis_date": "2025-09-02 13:51:44 UTC",
+  "status": "completed",
+  "findings": [
+    {
+      "action": "expert_review",
+      "agent": "python-expert",
+      "status": "ready_for_expert_review",
+      "language": "python",
+      "findings_count": 1,
+      "total_duplicates": 1,
+      "expert_result": {
+        "status": "ready_for_expert_review",
+        "action": "INVOKE_EXPERT_AGENT",
+        "recommended_expert": "python-expert",
+        "language": "python",
+        "findings_count": 1,
+        "total_duplicates": 1,
+        "findings_batch": [
+          {
+            "finding_id": "aggregated_000",
+            "title": "Multiple duplicates between language_detector.py and tech_stack_detector.py",
+            "description": "Found 1 duplicate patterns between files with average similarity 1.00",
+            "severity": "high",
+            "evidence": {
+              "file_pair": [
+                "/Users/adamjackson/LocalDev/ai-assisted-workflows/test_codebase/code-quality-issues/duplicate_detectors/language_detector.py",
+                "/Users/adamjackson/LocalDev/ai-assisted-workflows/test_codebase/code-quality-issues/duplicate_detectors/tech_stack_detector.py"
+              ],
+              "duplicate_count": 1,
+              "average_similarity": 0.999758243560791,
+              "symbol_types": [
+                "class"
+              ],
+              "duplicate_symbols": [
+                {
+                  "original": "LanguageDetector",
+                  "duplicate": "TechStackDetector",
+                  "similarity": 0.999758243560791
+                }
+              ],
+              "individual_findings": [
+                {
+                  "finding_id": "duplicate_0000",
+                  "title": "Duplicate: LanguageDetector & TechStackDetector",
+                  "description": "Found semantic_similarity between symbols with 1.000 similarity",
+                  "severity": "high",
+                  "file_path": "/Users/adamjackson/LocalDev/ai-assisted-workflows/test_codebase/code-quality-issues/duplicate_detectors/language_detector.py",
+                  "line_number": 12,
+                  "evidence": {
+                    "similarity_score": 0.999758243560791,
+                    "confidence": 0.95,
+                    "reason": "copy_paste_error",
+                    "comparison_type": "semantic_similarity",
+                    "original_symbol": {
+                      "name": "LanguageDetector",
+                      "type": "class",
+                      "file": "/Users/adamjackson/LocalDev/ai-assisted-workflows/test_codebase/code-quality-issues/duplicate_detectors/language_detector.py",
+                      "line": 12,
+                      "content": "class LanguageDetector",
+                      "lsp_kind": 5,
+                      "line_count": 107
+                    },
+                    "duplicate_symbol": {
+                      "name": "TechStackDetector",
+                      "type": "class",
+                      "file": "/Users/adamjackson/LocalDev/ai-assisted-workflows/test_codebase/code-quality-issues/duplicate_detectors/tech_stack_detector.py",
+                      "line": 26,
+                      "content": "",
+                      "lsp_kind": "5",
+                      "line_count": 529
+                    },
+                    "details": {
+                      "detection_method": "chromadb_similarity",
+                      "embedding_engine": "codebert",
+                      "storage_system": "chromadb_cosine"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "task_description": "# Batch Code Duplication Review and Planning Task\n\n## Context\nYou are reviewing a comprehensive batch of code duplication findings from our continuous improvement system. This is a BATCH REVIEW covering multiple file pairs with similar patterns.\n\nYour role is to:\n1. Analyze patterns across all duplicate findings in this batch\n2. Create a strategic refactoring approach for the entire batch\n3. Prioritize and plan the most effective intervention strategy\n\n## Batch Summary\n\n**Language**: python\n**Total File Pairs**: 1\n**Total Duplicates Found**: 1\n**Average Duplicates per Pair**: 1.0\n\n### File Pairs in This Batch:\n- language_detector.py \u2194 tech_stack_detector.py (1 duplicates)\n\n### Common Duplicate Patterns Identified:\n- LanguageDetector\n\n## Strategic Review Requirements\n\n1. **Pattern Analysis Phase**:\n   - Identify common duplication patterns across all file pairs\n   - Look for systemic issues (shared base classes, common utilities, etc.)\n   - Assess whether this indicates architectural issues requiring broader refactoring\n\n2. **Batch Strategy Phase**:\n   - Determine if these duplicates should be addressed individually or as a cohesive refactoring\n   - Prioritize which file pairs to address first based on risk and complexity\n   - Consider if a new shared module/utility would eliminate multiple duplications\n\n3. **Implementation Planning Phase**:\n   - Create a strategic implementation plan that addresses the batch holistically\n   - Consider dependencies between file pairs\n   - Plan the sequence of refactoring to minimize risk\n\n4. **Action Decision Phase**:\n   - For low-risk batch: Create comprehensive implementation plan for /todo-orchestrate\n   - For high-risk or complex batch: Create detailed strategic analysis for human review\n   - For mixed complexity: Plan phased approach with immediate low-risk fixes\n\n## Success Criteria\n- Comprehensive analysis of duplication patterns across the entire batch\n- Strategic approach that maximizes refactoring benefit while minimizing risk\n- Clear prioritization and sequencing of interventions\n- Either a complete batch implementation plan or strategic recommendation for human review\n\nPlease proceed with the batch analysis and create an appropriate strategic response.\n",
+        "instructions": "These 1 duplicate findings require expert review. Please invoke the python-expert agent using the Task tool to analyze these duplicates and provide refactoring recommendations. The agent should receive the complete task description and context.",
+        "expert_context": {
+          "agent_type": "python-expert",
+          "language_focus": "python",
+          "complexity_level": "low",
+          "batch_processing": false,
+          "priority": "high"
+        },
+        "next_steps": [
+          "1. Review the 1 findings above",
+          "2. Use Task tool to invoke python-expert agent",
+          "3. Pass the complete task_description to the agent",
+          "4. Execute the agent's recommendations"
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "expert_reviews": 1,
+    "automatic_fixes": 0,
+    "github_issues": 0,
+    "skipped": 0,
+    "errors": 0,
+    "successes": 0,
+    "agents_used": [
+      "python-expert"
+    ],
+    "total_processing_time": 0.0,
+    "total_findings": 1
+  },
+  "config": {
+    "similarity_threshold": 0.85,
+    "project_root": "/Users/adamjackson/LocalDev/ai-assisted-workflows/test_codebase/code-quality-issues/duplicate_detectors",
+    "analysis_mode": "github_actions"
+  },
+  "metadata": {
+    "analysis_type": "duplicate_detection",
+    "workflow_trigger": "github_actions",
+    "findings_processed": 1,
+    "action": "analysis_completed"
+  }
+}

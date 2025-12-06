@@ -1,0 +1,17 @@
+{
+  "name": "clean-javascript-app",
+  "version": "1.0.0",
+  "description": "Clean JavaScript application for false positive testing",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": ["clean", "secure", "testing"],
+  "author": "Test",
+  "license": "MIT",
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

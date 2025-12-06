@@ -1,0 +1,16 @@
+# AI Assisted Workflows - Minimal Base Dependencies (Python 3.11+)
+
+# Core analyzer/runtime deps
+lizard>=1.17.0                 # Cross-language complexity metrics (CLI)
+ruff>=0.5.0                    # Python linting/performance rules (CLI)
+sqlglot>=20.0.0               # SQL parsing and analysis
+detect-secrets>=1.4.0          # Secrets detection (CLI)
+
+# Foundation (lightweight)
+pyyaml>=6.0                    # YAML parsing for configs
+jinja2>=3.0.0                  # Template rendering (tooling)
+click>=8.0.0                   # CLI support (tooling)
+rich>=12.0.0                   # Rich console output (tooling)
+platformdirs>=2.5.0            # Cross-platform dirs
+filelock>=3.8.0                # File-based locking
+watchdog>=2.1.0                # File system monitoring

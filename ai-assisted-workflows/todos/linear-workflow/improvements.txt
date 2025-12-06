@@ -1,0 +1,46 @@
+- needs more reporting/interaction at each step, particularly needs to allow user to input on initial findings and approach, particularly when focus on established libraries
+- think it should probably create a folder containing all the assets of the subagents
+- i think lose the dry run mechanic but just make it ask whether or not to progress at each stage, so you could choose not to mutate
+- have the ability to continue from a particularly step, with the available asset folder possible to pass as an argument (makes it more robust)
+- "created_issue_ids": would be useful to have the issue urls
+- "project_id": "8f0d2045-c32d-417a-8028-adc2971b265c", add project url as a property
+- speed could be improved, though might be less of an issue if broken up into feedback steps
+- should perform a semantic check issue doesnt already exist
+- needs get next logical task
+- needs validate acceptance criteria met
+- add linear mcp to claude (add install of tool to both install scripts)
+
+
+Improvement instructions:
+
+If you review todos/linear-workflow/run-001-log.txt you will see the complete log of a run of the systems/opencode/command/plan-linear.md.  I have some bugs and observations for improvements that ill list
+here.
+
+bugs:
+
+- it didnt seem to recognise the artifact based when i called it just using /plan-linear baseline.md --dry-run.  I think we need a --task argument introduced which can be a string or a file, this is
+then treated as the starting outline/artifact.
+
+improvements:
+
+I liked how the context is kept minimal in the command, but it does feel like the user needs more visibility and input during the process, particularly where contraints or decisions are made.
+Theres also many research/investigation/actions that might produce useful artifacts for user clarity, that just get hidden/lost because they are in a subagent and hte user only sees the end emitted
+report.  This compounds the appearence of speed of the process, as they user is left waiting most of the time, also its clear that we need more of an iterative report build, with teh ability to
+re-run the plan-linear from a specific step, skipping earlier ones and using task context produced previously to continue, with that in mind:
+
+- we should now have a global folder created at the start of the process, when subagents are carrying out tasks where decisions or research or context gathering occurs, they should capture these
+details in suiutabily named markdown files, in a subfolder labelled by the step it occurred within.  We should also create our final report, in the format required, as an empty instance in this
+global folder, also at the start, then it should be added to as each section detail becomes known.  This adds robustness to the process and allows for the skip and continue feature
+- at each step, as a subagent returns as task completed, if this is a step that involved decision marking or research, the process should pause, the user should be directed to review the progress so
+far and outline any feedback, which may mean initiating the same subagent again, or confirming they are happy to proceed to the next step.
+- using this approach, --dry-run is no longer needed (you can just exit before mutation step if user says dont continue), we need a --start-step argument with --diff also supplied, which would be
+pointing at the folder produced by the last run.
+- a new linear-continue-agent would be used to review whats in a --diff specified folder, ensuring the skipped steps requirements have been covered and give a readiness to continue from step x
+answer, the command would then continue from that suggested step.\
+- in our final report theres a couple of fields to add that would be useful, linear project url (after project_id) and issue url (in created_issue_ids section)
+- I would also like you to use the linear mcp tool to review the issues that were created to see if your issue type labelling could be improved.
+- I would also like you to the the linear mcp tool to review the project name that was created "Just Shop Security Hardening Sprint 1" - Feels like the project level item shouldnt be representing a
+sprint, the project would be Juice Shop, it looks like it has the concept of a cycle as a grouping of specific scoped items under a (permanent) project? So the cycle would be the sprint, its focus
+security hardening, with scope represented by the issues created.  However review docs/linear/concepts.md to ensure we have it correct whether amends are required.  I'm also less interested in
+representing these as an agile sprint, I prefer a kanban approach where you have a body (scope) of work - not sure if either agile or kanban are compatible concepts here so stay true to the linear
+concepts doc.

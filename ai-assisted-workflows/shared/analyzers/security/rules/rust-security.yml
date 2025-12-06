@@ -1,0 +1,163 @@
+rules:
+  - id: rust-command-injection
+    pattern-either:
+      - pattern: |
+          Command::new($CMD).arg($USER_INPUT)
+      - pattern: |
+          Command::new($CMD).args($USER_INPUT)
+      - pattern: |
+          std::process::Command::new($CMD).arg($USER_INPUT)
+      - pattern: |
+          std::process::Command::new($CMD).args($USER_INPUT)
+    message: "Potential command injection vulnerability. User input is passed directly to command execution."
+    languages: [rust]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-78: OS Command Injection"
+      owasp: "A01:2021 Injection"
+      references:
+        - "https://owasp.org/www-community/attacks/Command_Injection"
+
+  - id: rust-unsafe-block
+    pattern: |
+      unsafe { ... }
+    message: "Unsafe block usage detected. Unsafe code requires careful review for memory safety."
+    languages: [rust]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-119: Memory Corruption"
+      references:
+        - "https://doc.rust-lang.org/book/ch19-01-unsafe-rust.html"
+
+  - id: rust-path-traversal-format
+    pattern-either:
+      - pattern: |
+          format!($PATH, $USER_INPUT)
+      - pattern: |
+          std::format!($PATH, $USER_INPUT)
+    message: "Potential path traversal vulnerability. User input in path formatting can lead to directory traversal."
+    languages: [rust]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-22: Path Traversal"
+      owasp: "A01:2021 Injection"
+
+  - id: rust-sql-injection
+    pattern-either:
+      - pattern: |
+          $CONN.execute(&format!("SELECT * FROM {} WHERE {}", $TABLE, $USER_INPUT))
+      - pattern: |
+          $CONN.query(&format!("SELECT * FROM {} WHERE {}", $TABLE, $USER_INPUT))
+      - pattern: |
+          format!("SELECT * FROM {} WHERE {}", $TABLE, $USER_INPUT)
+    message: "Potential SQL injection vulnerability. User input concatenated into SQL query."
+    languages: [rust]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-89: SQL Injection"
+      owasp: "A03:2021 Injection"
+
+  - id: rust-use-after-free
+    pattern-either:
+      - pattern: |
+          let $PTR = Box::into_raw($BOX);
+          ...
+          drop($PTR);
+          ...
+          *$PTR
+      - pattern: |
+          std::mem::drop($VAR);
+          ...
+          $VAR.$METHOD(...)
+    message: "Potential use-after-free vulnerability. Accessing memory after it has been freed."
+    languages: [rust]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-416: Use After Free"
+
+  - id: rust-buffer-overflow-unsafe
+    pattern-either:
+      - pattern: |
+          unsafe {
+            ...
+            *($PTR.add($OFFSET))
+            ...
+          }
+      - pattern: |
+          unsafe {
+            ...
+            std::slice::from_raw_parts($PTR, $LEN)
+            ...
+          }
+    message: "Potential buffer overflow in unsafe block. Raw pointer arithmetic can lead to memory corruption."
+    languages: [rust]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-120: Buffer Overflow"
+
+  - id: rust-weak-crypto-md5
+    pattern-either:
+      - pattern: |
+          use md5::*
+      - pattern: |
+          md5::compute(...)
+      - pattern: |
+          Md5::digest(...)
+    message: "Weak cryptographic algorithm MD5 detected. Use stronger hashing algorithms like SHA-256 or SHA-3."
+    languages: [rust]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-327: Use of Broken Cryptographic Algorithm"
+
+  - id: rust-hardcoded-secret
+    pattern-either:
+      - pattern: |
+          let $VAR = "secret";
+      - pattern: |
+          let $VAR = "password123";
+      - pattern: |
+          const $VAR: &str = "secret";
+      - pattern: |
+          static $VAR: &str = "api_key_...";
+    message: "Hardcoded secret detected. Use environment variables or secure configuration management."
+    languages: [rust]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+
+  - id: rust-panic-on-unwrap
+    pattern-either:
+      - pattern: |
+          $VAR.unwrap()
+      - pattern: |
+          $VAR.expect($MSG)
+    message: "Panic on unwrap/expect can lead to denial of service. Consider using proper error handling."
+    languages: [rust]
+    severity: INFO
+    metadata:
+      category: security
+      cwe: "CWE-248: Uncaught Exception"
+
+  - id: rust-deserialization-unsafe
+    pattern-either:
+      - pattern: |
+          bincode::deserialize($DATA)
+      - pattern: |
+          serde_json::from_str($DATA)
+      - pattern: |
+          serde::Deserialize::deserialize($DATA)
+    message: "Unsafe deserialization detected. Validate and sanitize input before deserialization."
+    languages: [rust]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-502: Deserialization of Untrusted Data"
+      owasp: "A08:2021 Software and Data Integrity Failures"

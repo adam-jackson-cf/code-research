@@ -1,0 +1,48 @@
+{
+  "timestamp": 1756492942.3101282,
+  "analysis_date": "2025-08-29 18:42:22 UTC",
+  "status": "success",
+  "findings": [
+    {
+      "action": "expert_review",
+      "agent": "python-expert",
+      "status": "agent_call_required",
+      "language": "python",
+      "findings_count": 19,
+      "total_duplicates": 1209,
+      "expert_result": {
+        "status": "agent_call_required",
+        "agent": "python-expert",
+        "task_description": "# Comprehensive Code Duplication Review and Refactoring Strategy\n\n## Context\nYou are conducting a comprehensive review of code duplication findings across multiple file pairs in a python codebase. Your role is to:\n1. Analyze all duplicate patterns holistically\n2. Create a unified refactoring strategy that addresses the entire scope\n3. Decide on the best approach for coordinated refactoring across all affected files\n\n## Batch Duplication Overview\n\n**Language**: python\n**Total File Pairs**: 19\n**Total Duplicates Found**: 1209\n\n### File Pairs Analyzed:\n- **settings.py \u2194 status.py**: 26 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 run.py**: 71 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 cleanup.py**: 58 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 setup.py**: 94 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 evaluator.py**: 47 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 settings.py**: 61 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 auth.py**: 78 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 cli.py**: 111 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 errors.py**: 65 duplicates (avg similarity: 0.99)\n- **main.py \u2194 settings.py**: 56 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 auth_manager.py**: 82 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 execution_engine.py**: 37 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 config.py**: 144 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 base_installer.py**: 72 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 install_claude.py**: 23 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 install_gemini.py**: 28 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 metrics_parser.py**: 72 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 install_qwen.py**: 23 duplicates (avg similarity: 0.99)\n- **settings.py \u2194 docker_manager.py**: 61 duplicates (avg similarity: 0.99)\n\n### Sample Duplicate Patterns (across all pairs):\n- SECRET_KEY \u2194 get_config (similarity: 0.99)\n- SECRET_KEY \u2194 ToolStatus (similarity: 0.99)\n- SECRET_KEY \u2194 StatusCommand (similarity: 0.99)\n- SECRET_KEY \u2194 Columns (similarity: 0.99)\n- DATABASE_PASSWORD \u2194 get_config (similarity: 0.99)\n- DATABASE_PASSWORD \u2194 ToolStatus (similarity: 0.99)\n- DATABASE_PASSWORD \u2194 StatusCommand (similarity: 0.99)\n- API_SECRET \u2194 ToolStatus (similarity: 1.00)\n- API_SECRET \u2194 get_config (similarity: 1.00)\n- API_SECRET \u2194 StatusCommand (similarity: 1.00)\n- GITHUB_TOKEN \u2194 get_config (similarity: 0.99)\n- GITHUB_TOKEN \u2194 ToolStatus (similarity: 0.99)\n- GITHUB_TOKEN \u2194 StatusCommand (similarity: 0.99)\n- JWT_SIGNING_KEY \u2194 get_config (similarity: 0.99)\n- ROOT_URLCONF \u2194 get_config (similarity: 0.99)\n... and 1194 more duplicates across all file pairs\n\n\n## Detailed Code Snippets (Verbose Mode)\n\nThe following shows the actual code being compared:\n\n#### settings.py \u2194 status.py\n\n#### settings.py \u2194 run.py\n\n#### settings.py \u2194 cleanup.py\n\n#### settings.py \u2194 setup.py\n\n#### settings.py \u2194 evaluator.py\n\n#### settings.py \u2194 settings.py\n\n#### settings.py \u2194 auth.py\n\n#### settings.py \u2194 cli.py\n\n#### settings.py \u2194 errors.py\n\n#### main.py \u2194 settings.py\n\n#### settings.py \u2194 auth_manager.py\n\n#### settings.py \u2194 execution_engine.py\n\n#### settings.py \u2194 config.py\n\n#### settings.py \u2194 base_installer.py\n\n#### settings.py \u2194 install_claude.py\n\n#### settings.py \u2194 install_gemini.py\n\n#### settings.py \u2194 metrics_parser.py\n\n#### settings.py \u2194 install_qwen.py\n\n#### settings.py \u2194 docker_manager.py\n\n\n## Comprehensive Analysis Requirements\n\n1. **Holistic Pattern Analysis**:\n   - Identify common themes and patterns across all file pairs\n   - Look for architectural issues that span multiple files\n   - Assess whether duplicates suggest missing abstractions or shared utilities\n\n2. **Unified Refactoring Strategy**:\n   - Consider refactoring all related duplicates together rather than piecemeal\n   - Identify opportunities for shared libraries, base classes, or utility functions\n   - Plan the sequence of refactoring to minimize conflicts\n\n3. **Risk Assessment**:\n   - Evaluate the overall complexity and impact of coordinated refactoring\n   - Consider dependencies, test coverage, and API impacts across all files\n   - Assess whether batch refactoring is safer than individual file fixes\n\n4. **Strategic Decision**:\n   - **For coordinated automatic refactoring**: Use /todo-orchestrate with comprehensive implementation plan\n   - **For complex architectural changes**: Create detailed GitHub issue with full analysis and recommendations\n\n## Success Criteria\n- Comprehensive analysis covering all 19 file pairs\n- Clear strategic approach that considers interdependencies\n- Either completed coordinated refactoring or well-documented architectural improvement plan\n\n## Additional Context\nThis batch review allows you to see the full scope of duplication patterns, enabling better architectural decisions than reviewing files individually.\n\nPlease proceed with the holistic analysis and create an appropriate refactoring strategy.\n",
+        "message": "Task prepared for python-expert - agent integration pending",
+        "context_summary": {
+          "duplicates": 1209,
+          "similarity": 0,
+          "files": "19 file pairs"
+        }
+      }
+    }
+  ],
+  "summary": {
+    "expert_reviews": 1,
+    "automatic_fixes": 0,
+    "github_issues": 0,
+    "skipped": 0,
+    "errors": 0,
+    "successes": 0,
+    "agents_used": [
+      "python-expert"
+    ]
+  },
+  "config": {
+    "similarity_threshold": 0.85,
+    "project_root": "/Users/adamjackson/LocalDev/ai-assisted-workflows/test_codebase/vulnerable-apps/test-python",
+    "analysis_mode": "github_actions"
+  },
+  "metadata": {
+    "analysis_type": "duplicate_detection",
+    "workflow_trigger": "github_actions",
+    "findings_processed": 1209,
+    "action": "analysis_completed"
+  }
+}

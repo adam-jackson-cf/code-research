@@ -1,0 +1,9 @@
+---
+description: {{ frontmatter.description | default(title) }}
+globs: {{ frontmatter.globs | default('"**/*"') }}
+---
+
+# {{ title }}
+
+{{ body }}
+{{ managed_sentinel }}

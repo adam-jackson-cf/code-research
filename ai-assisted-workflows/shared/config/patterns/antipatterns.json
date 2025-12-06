@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "patterns": {
+    "god_class": {
+      "indicators": [
+        "class\\s+\\w+.*:\\s*(?:\\n(?:\\s*(?:def|class|@).*\\n?){15,})"
+      ],
+      "severity": "high",
+      "description": "God class detected - too many responsibilities",
+      "exclude_patterns": ["test.*\\.py", ".*test\\.py"]
+    },
+    "long_parameter_list": {
+      "indicators": [
+        "def\\s+\\w+\\s*\\([^)]*,\\s*[^)]*,\\s*[^)]*,\\s*[^)]*,\\s*[^)]*,\\s*[^)]*,\\s*[^)]*[^)]*\\):"
+      ],
+      "severity": "medium",
+      "description": "Long parameter list detected",
+      "exclude_patterns": []
+    },
+    "feature_envy": {
+      "indicators": ["\\w+\\.\\w+\\.\\w+\\.\\w+\\.\\w+"],
+      "severity": "medium",
+      "description": "Feature envy - excessive method chaining",
+      "exclude_patterns": ["self\\.", "this\\."]
+    }
+  }
+}

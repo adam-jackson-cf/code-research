@@ -1,0 +1,10 @@
+{% if frontmatter and frontmatter.get('description') %}description = "{{ frontmatter.description }}"
+{% endif %}
+prompt = '''
+# {{ title }}
+
+{{ body }}
+Arguments: {{ '{{args}}' }}
+
+{{ managed_sentinel }}
+'''

@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "labels": {
+    "always_add": ["planning:ai-linear", "source:linear-plan"],
+    "type_set": [
+      "type:foundation",
+      "type:feature",
+      "type:spike",
+      "type:quality",
+      "type:integration",
+      "type:chore",
+      "type:epic-candidate"
+    ],
+    "priority_set": ["priority:p0", "priority:p1", "priority:p2", "priority:p3"],
+    "risk_set": ["risk:low", "risk:medium", "risk:high"],
+    "label_rules": [
+      { "match": { "phase": 0 }, "add": ["type:foundation", "priority:p1"] },
+      { "match": { "is_spike": true }, "add": ["type:spike", "risk:medium", "priority:p2"] },
+      { "match": { "touches_auth": true }, "add": ["risk:medium"] },
+      { "match": { "external_integration_count": { ">=": 1 } }, "add": ["type:integration"] },
+      { "match": { "data_migration": true }, "add": ["risk:medium", "priority:p1"] },
+      { "match": { "security_sensitive": true }, "add": ["risk:high", "priority:p0"] },
+      { "match": { "complexity_size": "L" }, "add": ["priority:p2"] },
+      { "match": { "complexity_size": "M" }, "add": ["priority:p2"] },
+      { "match": { "complexity_size": "S" }, "add": ["priority:p3"] },
+      { "match": { "complexity_size": "XS" }, "add": ["priority:p3"] },
+      { "match": { "needs_manual_review": true }, "add": ["priority:p1", "risk:medium"] }
+    ],
+    "ordering": ["type", "priority", "risk", "planning", "source"]
+  },
+  "complexity": {
+    "weights": {
+      "bespoke_code": 1.0,
+      "technology_surface": 0.5,
+      "system_touch_points": 0.4,
+      "acceptance_criteria_density": 0.3,
+      "user_journey_impact": 2.0
+    },
+    "normalization": {
+      "bespoke_code_loc_divisor": 50,
+      "bespoke_code_cap": 5
+    },
+    "tshirt_thresholds": {
+      "XS": 1.0,
+      "S": 2.0,
+      "M": 3.5,
+      "L": 5.0,
+      "XL": 999.0
+    },
+    "default_max_size": "L"
+  },
+  "estimation": {
+    "default_style": "tshirt",
+    "expose_rcs_in_dry_run": true
+  },
+  "decomposition": {
+    "axes_priority": [
+      "acceptance_cluster",
+      "integration_boundary",
+      "multi_tech_span",
+      "user_journey_split",
+      "concern_isolation"
+    ],
+    "max_depth": 3,
+    "min_child_count_trigger": 2,
+    "min_ac_criteria_split_trigger": 5
+  },
+  "audit": {
+    "min_acceptance_criteria": 2,
+    "enforce_imperative_title": true,
+    "max_issue_section_length_lines": 30,
+    "terminology_drift_threshold": 0.55,
+    "contradiction_check": true,
+    "style_score_weights": {
+      "title_verb": 0.3,
+      "acceptance_specificity": 0.4,
+      "terminology_consistency": 0.3
+    }
+  },
+  "terminology": {
+    "canonical_terms": [],
+    "auto_canonicalize": true
+  },
+  "issueTemplate": {
+    "sections_order": [
+      "Task Objective",
+      "Requirements",
+      "Acceptance Criteria"
+    ],
+    "footer_format": "<!-- plan-hash: {hash} -->\\n<!-- plan-version: 1 -->\\n<!-- project-id: {project_id} -->"
+  },
+  "project": {
+    "name_pattern": "{primary_concept} Phase 1",
+    "collision_suffix_hash_len": 6,
+    "description_footer": "<!-- linear-plan-meta: artifact-hash={artifact_hash}; version=1 -->"
+  },
+  "idempotency": {
+    "issue_hash_marker": "plan-hash:",
+    "project_hash_marker": "artifact-hash:"
+  },
+  "flags": {
+    "allow_new_project_creation": true,
+    "auto_append_hash_on_collision": true
+  }
+}

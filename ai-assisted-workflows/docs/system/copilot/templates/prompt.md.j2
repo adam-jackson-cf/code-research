@@ -1,0 +1,85 @@
+{%- macro copilot_variable_value(var) -%}
+{%- if var.kind == 'positional' -%}
+${input:{{ var.token.lstrip('@').lower().replace('_', '-') }}}
+{%- elif var.kind in ('flag', 'named') -%}
+${input:{{ (var.flag_name or var.token.lstrip('@')).lstrip('--').lower().replace('_', '-') }}}
+{%- else -%}
+{{ var.type_text if var.type_text else '<derived>' }}
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro format_copilot_variables(variables) -%}
+{%- set required = variables | selectattr('kind', 'equalto', 'positional') | list -%}
+{%- set optional = [] -%}
+{%- for var in variables -%}
+  {%- if var.kind in ['flag', 'named'] -%}
+    {%- set _ = optional.append(var) -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- set derived = variables | selectattr('kind', 'equalto', 'derived') | list -%}
+{%- if variables -%}
+## Variables
+{% if required %}
+
+### Required
+
+{% for var in required | sort(attribute='positional_index') -%}
+- {{ var.token }} = {{ copilot_variable_value(var) }}{% if var.description %} — {{ var.description }}{% endif %}
+
+{% endfor -%}
+{% endif -%}
+{%- if optional %}
+
+### Optional (derived from $ARGUMENTS)
+
+{% for var in optional | sort(attribute='flag_name') -%}
+- {{ var.token }} = {{ copilot_variable_value(var) }}{% if var.repeatable %} [repeatable]{% endif %}{% if var.description %} — {{ var.description }}{% endif %}
+
+{% endfor -%}
+{% endif -%}
+{%- if derived %}
+
+### Derived (internal)
+
+{% for var in derived -%}
+- {{ var.token }}{% if var.description %} — {{ var.description }}{% endif %}
+
+{% endfor -%}
+{%- endif -%}
+{%- endif -%}
+{%- endmacro -%}
+
+{%- set body_parts = body.split('\n## Variables\n') -%}
+{%- set body_before_vars = body_parts[0].rstrip() if body_parts | length > 0 else body -%}
+{%- set body_after_vars = '' -%}
+{%- if body_parts | length > 1 -%}
+  {%- set remaining_lines = body_parts[1].split('\n') -%}
+  {%- set found_next_section = namespace(value=False) -%}
+  {%- set after_lines = [] -%}
+  {%- for line in remaining_lines -%}
+    {%- if found_next_section.value -%}
+      {%- set _ = after_lines.append(line) -%}
+    {%- elif line.startswith('## ') and not line.startswith('## Variables') -%}
+      {%- set found_next_section.value = True -%}
+      {%- set _ = after_lines.append(line) -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- set body_after_vars = after_lines | join('\n') -%}
+{%- endif -%}
+---
+description: {{ frontmatter.get('description', title) }}
+agent: agent
+{% if frontmatter.get('tools') %}tools: {{ frontmatter.get('tools') | tojson }}
+{% endif %}---
+
+{{ body_before_vars }}
+
+{% if variables %}
+{{ format_copilot_variables(variables) }}
+{% endif %}
+{%- if body_after_vars %}
+
+{{ body_after_vars.lstrip() }}
+{%- endif %}
+
+{{ managed_sentinel }}

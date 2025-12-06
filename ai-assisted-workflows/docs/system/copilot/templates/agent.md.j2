@@ -1,0 +1,73 @@
+{%- macro map_claude_tools_to_copilot(allowed_tools) -%}
+{%- set copilot_tools = [] -%}
+{%- if allowed_tools -%}
+  {%- set tool_list = allowed_tools.split(',') if allowed_tools is string else allowed_tools -%}
+  {%- for tool in tool_list -%}
+    {%- set tool_clean = tool.strip() -%}
+    {%- if 'Read' in tool_clean or 'Glob' in tool_clean or 'LS' in tool_clean or 'serena__get_symbols' in tool_clean or 'serena__list_dir' in tool_clean or 'serena__find_file' in tool_clean -%}
+      {%- if 'read' not in copilot_tools -%}
+        {%- set _ = copilot_tools.append('read') -%}
+      {%- endif -%}
+    {%- endif -%}
+    {%- if 'Grep' in tool_clean or 'serena__search_for_pattern' in tool_clean or 'serena__find_symbol' in tool_clean or 'serena__find_referencing_symbols' in tool_clean -%}
+      {%- if 'search' not in copilot_tools -%}
+        {%- set _ = copilot_tools.append('search') -%}
+      {%- endif -%}
+    {%- endif -%}
+    {%- if 'Write' in tool_clean or 'Edit' in tool_clean or 'NotebookEdit' in tool_clean -%}
+      {%- if 'edit' not in copilot_tools -%}
+        {%- set _ = copilot_tools.append('edit') -%}
+      {%- endif -%}
+    {%- endif -%}
+    {%- if 'Bash' in tool_clean or 'BashOutput' in tool_clean or 'KillShell' in tool_clean -%}
+      {%- if 'terminal' not in copilot_tools -%}
+        {%- set _ = copilot_tools.append('terminal') -%}
+      {%- endif -%}
+    {%- endif -%}
+    {%- if 'WebSearch' in tool_clean or 'WebFetch' in tool_clean -%}
+      {%- if 'web' not in copilot_tools -%}
+        {%- set _ = copilot_tools.append('web') -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if 'githubRepo' not in copilot_tools and ('read' in copilot_tools or 'search' in copilot_tools) -%}
+    {%- set _ = copilot_tools.append('githubRepo') -%}
+  {%- endif -%}
+{%- endif -%}
+{{ copilot_tools | tojson }}
+{%- endmacro -%}
+
+{%- macro map_claude_model_to_copilot(model) -%}
+{%- if model -%}
+  {%- if 'sonnet' in model.lower() or 'claude' in model.lower() -%}
+claude-sonnet-4-5-20250929
+  {%- elif 'haiku' in model.lower() -%}
+claude-3-5-haiku-20241022
+  {%- elif 'opus' in model.lower() -%}
+claude-opus-4-20250514
+  {%- else -%}
+{{ model }}
+  {%- endif -%}
+{%- endif -%}
+{%- endmacro -%}
+---
+name: {{ frontmatter.get('name', title.lower().replace(' ', '-')) }}
+description: {{ frontmatter.get('description', title) | replace('\n', ' ') | trim }}
+{%- set tools = map_claude_tools_to_copilot(frontmatter.get('allowed-tools', '')) -%}
+{%- if tools and tools != '[]' %}
+tools: {{ tools }}
+{%- endif %}
+{%- set model = map_claude_model_to_copilot(frontmatter.get('model', '')) -%}
+{%- if model and model.strip() %}
+model: {{ model.strip() }}
+{%- endif %}
+{%- if frontmatter.get('handoffs') %}
+handoffs: {{ frontmatter.get('handoffs') | tojson }}
+{%- endif %}
+---
+
+# {{ title }}
+
+{{ body }}
+
+{{ managed_sentinel }}

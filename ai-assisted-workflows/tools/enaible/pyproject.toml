@@ -1,0 +1,35 @@
+[project]
+name = "enaible"
+version = "0.1.1"
+description = "Unified CLI for AI-Assisted Workflows"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "typer>=0.18,<0.19",
+    "jinja2>=3.1,<4.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3,<9.0",
+    "pytest-cov>=5.0,<6.0",
+    "mypy>=1.11,<2.0",
+    "ruff>=0.5,<0.6",
+    "types-Jinja2>=2.11.9",
+]
+
+[project.scripts]
+enaible = "enaible.__main__:app"
+
+[tool.uv]
+package = true
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = ["src"]
+namespace_packages = true
+packages = ["enaible"]

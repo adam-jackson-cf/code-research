@@ -1,0 +1,17 @@
+[run]
+source = shared
+omit =
+    shared/analyzers/*
+    shared/integration/*
+    shared/generators/*
+    shared/tests/*
+
+[report]
+show_missing = True
+include =
+    shared/core/base/validation_rules.py
+    shared/core/base/analyzer_registry.py
+    shared/core/config/loader.py
+    shared/core/utils/tech_stack_detector.py
+    shared/core/utils/architectural_pattern_detector.py
+    shared/analyzers/quality/code_duplication_analyzer.py

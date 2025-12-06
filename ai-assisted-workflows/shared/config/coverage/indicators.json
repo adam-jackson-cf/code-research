@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "indicators": [
+    "test",
+    "spec",
+    "_test",
+    "Test",
+    "Tests",
+    "__tests__",
+    "assert",
+    "expect",
+    "should",
+    "describe",
+    "it(",
+    "@Test",
+    "#[test]",
+    "func.*Test",
+    "def test_"
+  ]
+}

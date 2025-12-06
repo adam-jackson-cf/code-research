@@ -1,0 +1,668 @@
+{
+  "schema_version": 1,
+  "stacks": {
+    "react_native_expo": {
+      "name": "React Native with Expo",
+      "primary_languages": [
+        "javascript",
+        "typescript",
+        "jsx",
+        "tsx"
+      ],
+      "exclude_patterns": [
+        "node_modules/**/*",
+        "ios/Pods/**/*",
+        "android/build/**/*",
+        ".expo/**/*",
+        "web-build/**/*",
+        "dist/**/*",
+        ".next/**/*",
+        "coverage/**/*",
+        ".nyc_output/**/*",
+        "**/*.log",
+        "**/.DS_Store",
+        "**/Thumbs.db"
+      ],
+      "dependency_dirs": [
+        "node_modules",
+        "ios/Pods",
+        "android/build"
+      ],
+      "config_files": [
+        "package.json",
+        "app.json",
+        "expo.json",
+        "metro.config.js"
+      ],
+      "source_patterns": [
+        "app/**/*",
+        "src/**/*",
+        "components/**/*",
+        "screens/**/*"
+      ],
+      "build_artifacts": [
+        "dist",
+        "build",
+        "web-build",
+        ".expo"
+      ]
+    },
+    "node_js": {
+      "name": "Node.js",
+      "primary_languages": [
+        "javascript",
+        "typescript"
+      ],
+      "exclude_patterns": [
+        "node_modules/**/*",
+        "dist/**/*",
+        "build/**/*",
+        "coverage/**/*",
+        ".nyc_output/**/*",
+        "logs/**/*",
+        "*.log",
+        ".next/**/*",
+        ".nuxt/**/*"
+      ],
+      "dependency_dirs": [
+        "node_modules"
+      ],
+      "config_files": [
+        "package.json",
+        "tsconfig.json",
+        "webpack.config.js"
+      ],
+      "source_patterns": [
+        "src/**/*",
+        "lib/**/*",
+        "routes/**/*",
+        "controllers/**/*"
+      ],
+      "build_artifacts": [
+        "dist",
+        "build",
+        "lib"
+      ],
+      "boilerplate_patterns": [
+        "constructor",
+        "toString",
+        "valueOf",
+        "get *",
+        "set *",
+        "componentDidMount",
+        "componentWillUnmount",
+        "render",
+        "ngOnInit",
+        "ngOnDestroy"
+      ]
+    },
+    "python": {
+      "name": "Python",
+      "primary_languages": [
+        "python"
+      ],
+      "exclude_patterns": [
+        "venv/**/*",
+        "env/**/*",
+        ".venv/**/*",
+        "__pycache__/**/*",
+        "*.pyc",
+        ".pytest_cache/**/*",
+        "dist/**/*",
+        "build/**/*",
+        "*.egg-info/**/*",
+        ".coverage",
+        "htmlcov/**/*",
+        ".tox/**/*"
+      ],
+      "dependency_dirs": [
+        "venv",
+        "env",
+        ".venv",
+        "__pycache__"
+      ],
+      "config_files": [
+        "requirements.txt",
+        "setup.py",
+        "pyproject.toml",
+        "Pipfile"
+      ],
+      "source_patterns": [
+        "src/**/*",
+        "app/**/*",
+        "lib/**/*",
+        "**/*.py"
+      ],
+      "build_artifacts": [
+        "dist",
+        "build",
+        "*.egg-info"
+      ],
+      "boilerplate_patterns": [
+        "__init__",
+        "__str__",
+        "__repr__",
+        "__eq__",
+        "__hash__",
+        "__enter__",
+        "__exit__",
+        "get_*",
+        "set_*",
+        "is_*",
+        "has_*",
+        "_get_*",
+        "_set_*"
+      ]
+    },
+    "java_maven": {
+      "name": "Java with Maven",
+      "primary_languages": [
+        "java"
+      ],
+      "exclude_patterns": [
+        "target/**/*",
+        ".m2/**/*",
+        "*.class",
+        "*.jar",
+        "*.war",
+        "logs/**/*",
+        ".idea/**/*",
+        ".vscode/**/*"
+      ],
+      "dependency_dirs": [
+        "target",
+        ".m2"
+      ],
+      "config_files": [
+        "pom.xml",
+        "maven-wrapper.properties"
+      ],
+      "source_patterns": [
+        "src/main/**/*",
+        "src/test/**/*"
+      ],
+      "build_artifacts": [
+        "target"
+      ],
+      "boilerplate_patterns": [
+        "equals",
+        "hashCode",
+        "toString",
+        "get*",
+        "set*",
+        "is*",
+        "compareTo"
+      ]
+    },
+    "java_gradle": {
+      "name": "Java with Gradle",
+      "primary_languages": [
+        "java",
+        "kotlin"
+      ],
+      "exclude_patterns": [
+        "build/**/*",
+        ".gradle/**/*",
+        "*.class",
+        "*.jar",
+        "*.war",
+        "logs/**/*",
+        ".idea/**/*",
+        ".vscode/**/*"
+      ],
+      "dependency_dirs": [
+        "build",
+        ".gradle"
+      ],
+      "config_files": [
+        "build.gradle",
+        "gradle.properties",
+        "settings.gradle"
+      ],
+      "source_patterns": [
+        "src/main/**/*",
+        "src/test/**/*"
+      ],
+      "build_artifacts": [
+        "build"
+      ],
+      "boilerplate_patterns": [
+        "equals",
+        "hashCode",
+        "toString",
+        "get*",
+        "set*",
+        "is*",
+        "compareTo"
+      ]
+    },
+    "dotnet": {
+      "name": ".NET",
+      "primary_languages": [
+        "csharp"
+      ],
+      "exclude_patterns": [
+        "bin/**/*",
+        "obj/**/*",
+        "packages/**/*",
+        "*.dll",
+        "*.exe",
+        "*.pdb",
+        ".vs/**/*",
+        "TestResults/**/*"
+      ],
+      "dependency_dirs": [
+        "bin",
+        "obj",
+        "packages"
+      ],
+      "config_files": [
+        "*.csproj",
+        "*.sln",
+        "packages.config",
+        "project.json"
+      ],
+      "source_patterns": [
+        "**/*.cs",
+        "Controllers/**/*",
+        "Models/**/*",
+        "Views/**/*"
+      ],
+      "build_artifacts": [
+        "bin",
+        "obj"
+      ]
+    },
+    "go": {
+      "name": "Go",
+      "primary_languages": [
+        "go"
+      ],
+      "exclude_patterns": [
+        "vendor/**/*",
+        "bin/**/*",
+        "*.exe",
+        ".idea/**/*",
+        ".vscode/**/*"
+      ],
+      "dependency_dirs": [
+        "vendor",
+        "bin"
+      ],
+      "config_files": [
+        "go.mod",
+        "go.sum"
+      ],
+      "source_patterns": [
+        "**/*.go",
+        "cmd/**/*",
+        "pkg/**/*",
+        "internal/**/*"
+      ],
+      "build_artifacts": [
+        "bin"
+      ]
+    },
+    "rust": {
+      "name": "Rust",
+      "primary_languages": [
+        "rust"
+      ],
+      "exclude_patterns": [
+        "target/**/*",
+        "Cargo.lock",
+        ".idea/**/*",
+        ".vscode/**/*"
+      ],
+      "dependency_dirs": [
+        "target"
+      ],
+      "config_files": [
+        "Cargo.toml"
+      ],
+      "source_patterns": [
+        "src/**/*",
+        "**/*.rs"
+      ],
+      "build_artifacts": [
+        "target"
+      ]
+    },
+    "php": {
+      "name": "PHP",
+      "primary_languages": [
+        "php"
+      ],
+      "exclude_patterns": [
+        "vendor/**/*",
+        "composer.lock",
+        ".phpunit.cache/**/*",
+        "coverage/**/*"
+      ],
+      "dependency_dirs": [
+        "vendor"
+      ],
+      "config_files": [
+        "composer.json",
+        "composer.lock"
+      ],
+      "source_patterns": [
+        "**/*.php",
+        "src/**/*",
+        "app/**/*"
+      ],
+      "build_artifacts": [
+        "vendor"
+      ]
+    },
+    "ruby": {
+      "name": "Ruby",
+      "primary_languages": [
+        "ruby"
+      ],
+      "exclude_patterns": [
+        "vendor/**/*",
+        ".bundle/**/*",
+        "coverage/**/*",
+        "log/**/*",
+        "tmp/**/*"
+      ],
+      "dependency_dirs": [
+        "vendor",
+        ".bundle"
+      ],
+      "config_files": [
+        "Gemfile",
+        "Gemfile.lock"
+      ],
+      "source_patterns": [
+        "**/*.rb",
+        "app/**/*",
+        "lib/**/*"
+      ],
+      "build_artifacts": [
+        "vendor"
+      ]
+    },
+    "cpp": {
+      "name": "C/C++",
+      "primary_languages": [
+        "cpp",
+        "c"
+      ],
+      "exclude_patterns": [
+        "build/**/*",
+        "cmake-build-*/**/*",
+        "*.o",
+        "*.exe",
+        "*.out",
+        ".vscode/**/*",
+        ".idea/**/*"
+      ],
+      "dependency_dirs": [
+        "build",
+        "cmake-build-debug",
+        "cmake-build-release"
+      ],
+      "config_files": [
+        "CMakeLists.txt",
+        "Makefile",
+        "*.vcxproj"
+      ],
+      "source_patterns": [
+        "**/*.cpp",
+        "**/*.c",
+        "**/*.h",
+        "**/*.hpp",
+        "src/**/*"
+      ],
+      "build_artifacts": [
+        "build"
+      ]
+    },
+    "swift": {
+      "name": "Swift",
+      "primary_languages": [
+        "swift"
+      ],
+      "exclude_patterns": [
+        ".build/**/*",
+        "build/**/*",
+        "DerivedData/**/*",
+        "*.xcworkspace/**/*",
+        "*.xcodeproj/**/*"
+      ],
+      "dependency_dirs": [
+        ".build",
+        "build",
+        "DerivedData"
+      ],
+      "config_files": [
+        "Package.swift",
+        "*.xcodeproj",
+        "*.xcworkspace"
+      ],
+      "source_patterns": [
+        "**/*.swift",
+        "Sources/**/*"
+      ],
+      "build_artifacts": [
+        ".build",
+        "build"
+      ]
+    },
+    "kotlin": {
+      "name": "Kotlin",
+      "primary_languages": [
+        "kotlin"
+      ],
+      "exclude_patterns": [
+        "build/**/*",
+        ".gradle/**/*",
+        "*.class",
+        "*.jar",
+        ".idea/**/*"
+      ],
+      "dependency_dirs": [
+        "build",
+        ".gradle"
+      ],
+      "config_files": [
+        "build.gradle.kts",
+        "settings.gradle.kts"
+      ],
+      "source_patterns": [
+        "**/*.kt",
+        "src/**/*"
+      ],
+      "build_artifacts": [
+        "build"
+      ]
+    }
+  },
+  "exclusions": {
+    "universal": {
+      "directories": [
+        ".git",
+        "__pycache__",
+        ".pytest_cache",
+        ".coverage",
+        "coverage",
+        ".nyc_output",
+        "logs",
+        "tmp",
+        "temp",
+        "node_modules",
+        "dist",
+        "build",
+        ".next",
+        ".nuxt"
+      ],
+      "files": [
+        ".DS_Store",
+        "Thumbs.db",
+        ".env",
+        ".env.local",
+        ".env.production"
+      ],
+      "extensions": [
+        ".log",
+        ".tmp",
+        ".cache"
+      ]
+    },
+    "stacks": {
+      "react_native_expo": {
+        "directories": [
+          "node_modules",
+          "Pods",
+          "build",
+          "android/build",
+          "ios/build",
+          ".expo",
+          "web-build",
+          "dist",
+          ".next",
+          "ios/Pods"
+        ],
+        "extensions": []
+      },
+      "node_js": {
+        "directories": [
+          "node_modules",
+          "dist",
+          "build",
+          ".next",
+          ".nuxt"
+        ],
+        "extensions": []
+      },
+      "python": {
+        "directories": [
+          "__pycache__",
+          ".pytest_cache",
+          "venv",
+          ".venv",
+          "env",
+          ".env",
+          "site-packages",
+          "dist",
+          "build",
+          ".tox"
+        ],
+        "extensions": [
+          ".pyc",
+          ".pyo",
+          ".pyd"
+        ]
+      },
+      "java_maven": {
+        "directories": [
+          "target",
+          "build",
+          ".gradle",
+          ".idea",
+          ".settings"
+        ],
+        "extensions": [
+          ".class",
+          ".jar",
+          ".war"
+        ]
+      },
+      "java_gradle": {
+        "directories": [
+          "target",
+          "build",
+          ".gradle",
+          ".idea",
+          ".settings"
+        ],
+        "extensions": [
+          ".class",
+          ".jar",
+          ".war"
+        ]
+      },
+      "dotnet": {
+        "directories": [
+          "bin",
+          "obj",
+          "packages",
+          ".vs"
+        ],
+        "extensions": [
+          ".dll",
+          ".exe",
+          ".pdb"
+        ]
+      },
+      "go": {
+        "directories": [
+          "vendor",
+          "bin"
+        ],
+        "extensions": []
+      },
+      "rust": {
+        "directories": [
+          "target"
+        ],
+        "extensions": [
+          ".rlib"
+        ]
+      },
+      "php": {
+        "directories": [
+          "vendor",
+          "cache"
+        ],
+        "extensions": []
+      },
+      "ruby": {
+        "directories": [
+          "vendor",
+          "coverage"
+        ],
+        "extensions": []
+      },
+      "cpp": {
+        "directories": [
+          "build",
+          "cmake-build-debug",
+          "cmake-build-release",
+          ".vs",
+          "Debug",
+          "Release"
+        ],
+        "extensions": [
+          ".o",
+          ".obj",
+          ".exe",
+          ".dll",
+          ".so",
+          ".dylib"
+        ]
+      },
+      "swift": {
+        "directories": [
+          ".build",
+          "build",
+          "DerivedData"
+        ],
+        "extensions": []
+      },
+      "kotlin": {
+        "directories": [
+          "build",
+          ".gradle",
+          ".idea"
+        ],
+        "extensions": [
+          ".class",
+          ".jar"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "timestamp": 1756455149.02949,
+  "analysis_date": "2025-08-29 08:12:29 UTC",
+  "status": "success",
+  "findings": [],
+  "summary": {
+    "automatic_fixes": 0,
+    "github_issues": 0,
+    "skipped": 0,
+    "errors": 0,
+    "successes": 0
+  },
+  "config": {
+    "similarity_threshold": 0.85,
+    "project_root": "/Users/adamjackson/LocalDev/ai-assisted-workflows/test_codebase/clean-apps/clean-python",
+    "analysis_mode": "github_actions"
+  },
+  "metadata": {
+    "analysis_type": "duplicate_detection",
+    "workflow_trigger": "github_actions",
+    "findings_processed": 0,
+    "action": "no_duplicates_found"
+  }
+}

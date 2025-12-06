@@ -1,0 +1,22 @@
+[package]
+name = "enaible-prompts"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+enaible-core = { workspace = true }
+minijinja = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+regex = { workspace = true }
+glob = { workspace = true }
+similar = "2.3"
+once_cell = "1.19"
+
+[dev-dependencies]
+tempfile = { workspace = true }
+pretty_assertions = { workspace = true }

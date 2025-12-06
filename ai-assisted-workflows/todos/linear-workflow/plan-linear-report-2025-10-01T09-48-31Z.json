@@ -1,0 +1,212 @@
+{
+  "PlanLinearReport": {
+    "version": 2,
+    "objective": {
+      "summary": "Deliver comprehensive security hardening for Juice Shop monorepo addressing OWASP Top 10 vulnerabilities",
+      "artifact_type": "technical_spec",
+      "features": [
+        "Sanitize product search query (SQLi)",
+        "Enforce CSRF token on checkout",
+        "Password policy upgrade (min length 12 + zxcvbn score)",
+        "Dependency audit and upgrade (OWASP flagged libs)",
+        "Centralized security event logging",
+        "Add rate limiter to auth endpoints"
+      ],
+      "constraints": [
+        "No breaking changes to existing API contracts",
+        "Must support existing database schema",
+        "No downtime during deployment"
+      ],
+      "success_criteria": [
+        "All OWASP Top 10 vulnerabilities in juice-shop-monorepo are addressed",
+        "Automated security scans pass with zero high findings",
+        "Performance regression < 5% for authenticated flows"
+      ],
+      "assumptions": [
+        "Juice Shop monorepo is the target codebase `./test_codebase/juice-shop-monorepo`",
+        "OWASP dependency check baseline exists",
+        "Existing auth flow supports token injection"
+      ],
+      "risks": [
+        "Third-party dependency upgrades may introduce regressions",
+        "Rate limiting may impact legitimate user traffic",
+        "Logging volume may increase storage costs"
+      ],
+      "open_questions": [
+        "Which OWASP dependency check tool version to use?",
+        "Should rate limiting be per-IP or per-user?"
+      ]
+    },
+    "planning": {
+      "decisions": [
+        {
+          "decision": "Implement centralized security middleware layer",
+          "rationale": "Create a unified security middleware stack that handles CSRF protection, rate limiting, and security logging consistently across all routes, avoiding scattered security implementations and ensuring comprehensive coverage"
+        },
+        {
+          "decision": "Adopt defense-in-depth SQL injection prevention",
+          "rationale": "Combine parameterized queries (Sequelize ORM), input validation middleware, and SQL injection detection utilities to provide multiple layers of protection against SQLi attacks"
+        },
+        {
+          "decision": "Implement progressive password policy enforcement",
+          "rationale": "Phase in stronger password requirements with grandfathering for existing users, allowing gradual migration without breaking existing authentication flows"
+        },
+        {
+          "decision": "Create security audit and monitoring pipeline",
+          "rationale": "Extend existing Winston logging with structured security events, real-time alerting, and automated security scanning integration for continuous monitoring"
+        },
+        {
+          "decision": "Establish dependency vulnerability management workflow",
+          "rationale": "Implement automated dependency scanning with GitHub Actions, vulnerability triage process, and automated patch deployment for critical security updates"
+        }
+      ],
+      "foundation_tasks": [
+        {
+          "id": "ISS-001",
+          "title": "Create security middleware registry and base classes"
+        },
+        {
+          "id": "ISS-002",
+          "title": "Enhance insecurity.ts with comprehensive security utilities"
+        },
+        {
+          "id": "ISS-003",
+          "title": "Implement database migration framework for password policy"
+        },
+        {
+          "id": "ISS-004",
+          "title": "Build security testing harness and vulnerability fixtures"
+        },
+        {
+          "id": "ISS-005",
+          "title": "Establish security configuration management system"
+        },
+        {
+          "id": "ISS-006",
+          "title": "Create security monitoring dashboard integration"
+        }
+      ],
+      "issue_totals": {
+        "total": 12,
+        "foundation": 6,
+        "feature": 6,
+        "risk": 0
+      },
+      "complexity": {
+        "sizes": {
+          "XS": 0,
+          "S": 4,
+          "M": 5,
+          "L": 3,
+          "XL": 0
+        },
+        "rcs_min": 2.5,
+        "rcs_max": 5.8,
+        "oversize": []
+      },
+      "labels": {
+        "by_category": {
+          "foundation": ["type:foundation", "planning:ai-linear", "source:linear-plan"],
+          "feature": ["type:feature", "planning:ai-linear", "source:linear-plan"]
+        }
+      },
+      "glossary": [
+        {
+          "term": "RCS",
+          "definition": "Relative complexity score used for sizing"
+        },
+        {
+          "term": "SQLi",
+          "definition": "SQL Injection - code injection technique that attacks data-driven applications"
+        },
+        {
+          "term": "CSRF",
+          "definition": "Cross-Site Request Forgery - attack that forces authenticated users to submit unwanted requests"
+        },
+        {
+          "term": "zxcvbn",
+          "definition": "Password strength estimator inspired by password crackers"
+        }
+      ],
+      "dependencies": {
+        "edges": 16,
+        "roots": ["ISS-001"],
+        "leaves": ["ISS-007", "ISS-008", "ISS-009", "ISS-010", "ISS-011", "ISS-012"]
+      },
+      "audit": {
+        "errors": [],
+        "warnings": [
+          {
+            "code": "WARN_COMPLEXITY_HIGH",
+            "issue_id": "ISS-006",
+            "message": "Issue ISS-006 has high complexity (L size, rcs: 5.8) - consider breaking into smaller deliverables"
+          }
+        ]
+      },
+      "hashes": {
+        "artifact_raw": "sha256:53f3eb335cf5f71940212c227497eb20fdb45e52b5cf16862e3eb0fa491efc86",
+        "artifact_normalized": "sha256:7a81aa75df84500bddfe0187cc4345704fa070805fbd3e04b6d30cf412d4ae47",
+        "plan": "sha256:9dd718b2222ad592de304b81185721520691885b97d0027353d4cfd70789e155",
+        "config_fingerprint": "sha256:bd87a0786be5c4811bcc5dcb89a413eed758e79b417e6ff5d31bfbdac8f11a46"
+      }
+    },
+    "mutation": {
+      "project_id": "8f0d2045-c32d-417a-8028-adc2971b265c",
+      "project_name": "Juice Shop Security Hardening Sprint 1",
+      "created_issue_ids": [
+        "SOL-24",
+        "SOL-25",
+        "SOL-26",
+        "SOL-27",
+        "SOL-28",
+        "SOL-29",
+        "SOL-30",
+        "SOL-31",
+        "SOL-32",
+        "SOL-33",
+        "SOL-34",
+        "SOL-35"
+      ],
+      "skipped_issue_ids": [],
+      "linked_edges": [
+        {
+          "from": "SOL-30",
+          "to": ["SOL-24", "SOL-25", "SOL-27"]
+        },
+        {
+          "from": "SOL-31",
+          "to": ["SOL-24", "SOL-25", "SOL-27"]
+        },
+        {
+          "from": "SOL-32",
+          "to": ["SOL-24", "SOL-25", "SOL-26", "SOL-27"]
+        },
+        {
+          "from": "SOL-33",
+          "to": ["SOL-24", "SOL-28"]
+        },
+        {
+          "from": "SOL-34",
+          "to": ["SOL-24", "SOL-25", "SOL-29"]
+        },
+        {
+          "from": "SOL-35",
+          "to": ["SOL-24", "SOL-25", "SOL-29"]
+        }
+      ],
+      "cycle_warnings": []
+    },
+    "readiness": {
+      "ready": true,
+      "requires_split": false,
+      "pending_steps": [],
+      "advisories": [
+        "Consider adding 'Security' label for better categorization",
+        "Review high-complexity issues for potential splitting",
+        "Ensure all foundation tasks are completed before feature implementation"
+      ],
+      "plan_hash": "sha256:9dd718b2222ad592de304b81185721520691885b97d0027353d4cfd70789e155",
+      "timestamp": "2025-10-01T09:48:31Z"
+    }
+  }
+}

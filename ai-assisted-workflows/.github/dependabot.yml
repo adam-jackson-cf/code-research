@@ -1,0 +1,29 @@
+version: 2
+updates:
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/shared/setup"
+    schedule:
+      interval: "daily"
+      time: "03:00"
+    labels: ["dependencies", "python"]
+    open-pull-requests-limit: 3
+    groups:
+      python-minor:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    commit-message:
+      prefix: "deps(python)"
+      include: "scope"
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    labels: ["dependencies", "ci"]
+    open-pull-requests-limit: 1
+    commit-message:
+      prefix: "deps(actions)"
+      include: "scope"

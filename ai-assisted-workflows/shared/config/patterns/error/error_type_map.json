@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "default_patterns": [
+    "null_pointer",
+    "poor_error_handling"
+  ],
+  "mappings": {
+    "TypeError": ["null_pointer", "data_corruption"],
+    "ReferenceError": ["null_pointer"],
+    "NullPointerException": ["null_pointer"],
+    "SyntaxError": ["poor_error_handling"],
+    "MemoryError": ["memory_leak", "performance_issue"],
+    "TimeoutError": ["performance_issue", "race_condition"],
+    "SecurityError": ["injection_vulnerability", "auth_bypass"],
+    "PermissionError": ["auth_bypass"],
+    "ValidationError": ["injection_vulnerability"],
+    "unknown": "__all__"
+  }
+}

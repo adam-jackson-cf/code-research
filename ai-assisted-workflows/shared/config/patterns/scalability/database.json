@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "patterns": {
+    "large_result_sets": {
+      "description": "Potentially unbounded result set",
+      "indicators": [
+        "SELECT\\s+\\*\\s+FROM\\s+\\w+(?!.*LIMIT|.*WHERE|.*TOP)",
+        "\\.all\\(\\)(?!.*\\[:|\\[:\\d+\\])",
+        "fetchall\\(\\)(?!.*WHERE)",
+        "find\\(\\{\\}\\)(?!.*limit|.*skip)"
+      ],
+      "severity": "medium"
+    },
+    "missing_indexes": {
+      "description": "Query without explicit index consideration",
+      "indicators": [
+        "SELECT.*FROM\\s+\\w+\\s+WHERE\\s+\\w+\\s*=.*(?!.*INDEX|.*INDEXED)",
+        "ORDER\\s+BY\\s+\\w+.*(?!.*INDEX)",
+        "\\.filter\\(\\w+__exact\\s*=|\\.filter\\(\\w+\\s*=.*\\)\\.order_by\\("
+      ],
+      "severity": "medium"
+    },
+    "n_plus_one": {
+      "description": "Potential N+1 query problem",
+      "indicators": [
+        "for\\s+\\w+\\s+in\\s+.*\\.all\\(\\).*:\\s*\\n.*\\.(get|find|query|execute)\\(",
+        "for\\s+\\w+\\s+in\\s+.*:\\s*\\n.*\\s+.*\\.(get|find|query)\\(.*\\w+\\.id",
+        "forEach\\([^}]*=>\\s*[^}]*\\.(get|find|query)\\(.*\\w+\\.id",
+        "map\\([^}]*=>\\s*[^}]*\\.(get|find|query)\\("
+      ],
+      "severity": "high"
+    },
+    "no_pagination": {
+      "description": "Query without pagination",
+      "indicators": [
+        "SELECT.*FROM.*users.*(?!.*LIMIT|.*OFFSET)",
+        "SELECT.*FROM.*orders.*(?!.*LIMIT|.*OFFSET)",
+        "SELECT.*FROM.*products.*(?!.*LIMIT|.*OFFSET)",
+        "find\\(\\)\\.count\\(\\)\\s*>\\s*1000"
+      ],
+      "severity": "medium"
+    }
+  }
+}

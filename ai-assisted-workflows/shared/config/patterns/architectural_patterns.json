@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "patterns": {
+    "singleton": {
+      "indicators": [
+        "class\\s+\\w+.*:\\s*\\n(?:\\s*\\n)*\\s*_instance\\s*=\\s*None",
+        "def\\s+__new__\\s*\\(.*\\):\\s*\\n.*if.*_instance.*is.*None",
+        "def\\s+getInstance\\s*\\("
+      ],
+      "severity": "medium",
+      "description": "Singleton pattern implementation detected",
+      "exclude_patterns": ["@\\w+", "\\/\\*\\*.*\\*\\/", "#.*"]
+    },
+    "factory": {
+      "indicators": [
+        "class\\s+\\w*Factory\\w*.*:\\s*\\n(?:\\s|\\n)*def\\s+create",
+        "def\\s+create\\w*\\(.*\\):\\s*\\n.*return\\s+\\w+\\(",
+        "def\\s+make\\w*\\(.*\\):\\s*\\n.*return\\s+\\w+\\("
+      ],
+      "severity": "low",
+      "description": "Factory pattern implementation detected",
+      "exclude_patterns": ["@\\w+", "\\/\\*\\*.*\\*\\/", "#.*"]
+    },
+    "observer": {
+      "indicators": [
+        "class\\s+\\w*Observer\\w*.*:\\s*\\n(?:\\s|\\n)*def\\s+update",
+        "def\\s+notify\\s*\\(.*\\):\\s*\\n.*for.*in.*observers",
+        "def\\s+subscribe\\s*\\(.*\\):\\s*\\n.*observers.*append"
+      ],
+      "severity": "low",
+      "description": "Observer pattern implementation detected",
+      "exclude_patterns": ["addEventListener\\s*\\(", "on\\w+\\s*="]
+    },
+    "strategy": {
+      "indicators": [
+        "class\\s+\\w*Strategy\\w*.*:\\s*\\n(?:\\s|\\n)*def\\s+execute",
+        "def\\s+set_strategy\\s*\\(",
+        "strategy\\s*=\\s*\\w+Strategy\\("
+      ],
+      "severity": "low",
+      "description": "Strategy pattern implementation detected",
+      "exclude_patterns": []
+    },
+    "repository": {
+      "indicators": [
+        "class\\s+\\w*Repository\\w*.*:\\s*\\n(?:(?:\\s|\\n)*def\\s+(?:find|save|delete|get).*){2,}",
+        "def\\s+findBy\\w*\\(.*\\):\\s*\\n.*(?:SELECT|query|filter)"
+      ],
+      "severity": "low",
+      "description": "Repository pattern implementation detected",
+      "exclude_patterns": []
+    }
+  }
+}

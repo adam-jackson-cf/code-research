@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "patterns": {
+    "inefficient_algorithms": {
+      "description": "Potentially inefficient algorithm",
+      "indicators": [
+        "\\.sort\\(\\).*\\.sort\\(\\)",
+        "in\\s+range\\(len\\(",
+        "list\\(.*\\)\\[0\\]"
+      ],
+      "severity": "medium"
+    },
+    "memory_leaks": {
+      "description": "Potential memory leak",
+      "indicators": [
+        "global\\s+\\w+.*=.*\\[\\]",
+        "while\\s+True:.*append\\(",
+        "cache\\s*=\\s*\\{\\}"
+      ],
+      "severity": "high"
+    },
+    "nested_loops": {
+      "description": "Deep nested loops (O(n\u00b3) or worse)",
+      "indicators": [
+        "for\\s+.*:\\s*\\n.*for\\s+.*:\\s*\\n.*for\\s+",
+        "while\\s+.*:\\s*\\n.*while\\s+.*:\\s*\\n.*while\\s+"
+      ],
+      "severity": "high"
+    },
+    "synchronous_io": {
+      "description": "Synchronous I/O operation",
+      "indicators": [
+        "requests\\.get\\(",
+        "urllib\\.request\\.",
+        "httplib\\.",
+        "open\\(.*['\\\"]r['\\\"]",
+        "sleep\\(",
+        "time\\.sleep\\("
+      ],
+      "severity": "high"
+    }
+  }
+}

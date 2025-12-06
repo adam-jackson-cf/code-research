@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "features": {
+    "decorators": {
+      "patterns": ["@\\w+", "@\\w+\\(.*\\)"],
+      "languages": ["python"],
+      "description": "Python decorator syntax"
+    },
+    "jsdoc": {
+      "patterns": ["\\/\\*\\*.*?\\*\\/", "\\/\\*\\*.*@type.*\\*\\/"],
+      "languages": ["javascript", "typescript"],
+      "description": "JSDoc documentation"
+    },
+    "comments": {
+      "patterns": [
+        "#.*",
+        "\\/\\/.*",
+        "\\/\\*.*?\\*\\/",
+        "<!--.*?-->",
+        "\\(\\*.*?\\*\\)"
+      ],
+      "languages": [
+        "python",
+        "javascript",
+        "typescript",
+        "java",
+        "csharp",
+        "go",
+        "rust",
+        "php",
+        "ruby",
+        "swift",
+        "kotlin",
+        "cpp",
+        "c"
+      ],
+      "description": "Code comments across languages"
+    },
+    "annotations": {
+      "patterns": ["@\\w+", "@\\w+\\(.*\\)", "#\\[.*?\\]"],
+      "languages": ["java", "csharp", "rust", "swift", "kotlin"],
+      "description": "Language annotations and attributes"
+    },
+    "type_hints": {
+      "patterns": [
+        ":\\s*\\w+",
+        "->\\s*\\w+",
+        "<.*?>",
+        "var\\s+\\w+\\s*:\\s*\\w+"
+      ],
+      "languages": [
+        "python",
+        "typescript",
+        "swift",
+        "kotlin",
+        "rust",
+        "go",
+        "csharp"
+      ],
+      "description": "Type annotations and generics"
+    },
+    "generics": {
+      "patterns": ["<[^>]+>", "\\w+<.*?>"],
+      "languages": [
+        "java",
+        "csharp",
+        "typescript",
+        "swift",
+        "kotlin",
+        "rust",
+        "cpp"
+      ],
+      "description": "Generic type syntax"
+    },
+    "visibility_modifiers": {
+      "patterns": [
+        "public\\s+",
+        "private\\s+",
+        "protected\\s+",
+        "internal\\s+",
+        "fileprivate\\s+"
+      ],
+      "languages": ["java", "csharp", "swift", "kotlin", "cpp"],
+      "description": "Access modifiers"
+    },
+    "package_imports": {
+      "patterns": [
+        "import\\s+.*",
+        "from\\s+.*\\s+import",
+        "use\\s+.*",
+        "#include\\s*<.*?>"
+      ],
+      "languages": [
+        "python",
+        "javascript",
+        "typescript",
+        "java",
+        "kotlin",
+        "swift",
+        "rust",
+        "go",
+        "cpp",
+        "c"
+      ],
+      "description": "Import and include statements"
+    }
+  }
+}
