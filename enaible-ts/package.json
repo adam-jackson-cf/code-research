@@ -1,0 +1,44 @@
+{
+  "name": "enaible",
+  "version": "0.1.1",
+  "description": "Unified CLI for AI-Assisted Workflows (TypeScript port)",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "enaible": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "nunjucks": "^3.2.4",
+    "chalk": "^5.3.0",
+    "glob": "^10.3.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/nunjucks": "^3.2.6",
+    "typescript": "^5.3.3",
+    "tsx": "^4.7.0",
+    "vitest": "^1.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0"
+  },
+  "keywords": [
+    "cli",
+    "ai",
+    "workflows",
+    "prompts"
+  ],
+  "license": "MIT"
+}
