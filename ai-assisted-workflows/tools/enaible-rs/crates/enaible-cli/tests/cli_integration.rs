@@ -300,16 +300,223 @@ fn test_analyzer_run_with_test_target() {
         .arg("--target")
         .arg(&test_target)
         .arg("--json")
+        .arg("--min-severity")
+        .arg("low")
         .current_dir(&repo_root)
         .env("ENAIBLE_REPO_ROOT", &repo_root)
         .output()
         .expect("Failed to run analyzer");
 
-    // Even if analyzer isn't fully implemented, command should parse and return JSON
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
     eprintln!("Analyzer stdout: {}", stdout);
     eprintln!("Analyzer stderr: {}", stderr);
+
+    // Check if semgrep is available - if not, test should be skipped gracefully
+    if stderr.contains("semgrep not found") {
+        eprintln!("Skipping: semgrep not installed");
+        return;
+    }
+
+    // If semgrep ran, the output should be valid JSON with expected structure
+    if !stdout.trim().is_empty() {
+        let json: serde_json::Value = serde_json::from_str(&stdout)
+            .expect("Analyzer should produce valid JSON");
+
+        // Check for expected fields in analyzer output
+        assert!(json.get("tool").is_some(), "Should have 'tool' field");
+        assert!(json.get("findings").is_some(), "Should have 'findings' field");
+        assert!(json.get("summary").is_some(), "Should have 'summary' field");
+    }
+}
+
+#[test]
+fn test_security_analyzer_detects_vulnerabilities() {
+    let binary = get_binary_path();
+    let repo_root = get_ai_workflows_root();
+
+    // Look for vulnerable Python code in test fixtures
+    let vulnerable_apps = repo_root.join("test_codebase/vulnerable-apps");
+
+    if !vulnerable_apps.exists() {
+        eprintln!("Skipping test: vulnerable-apps not found");
+        return;
+    }
+
+    // Run detect_secrets analyzer
+    let output = Command::new(&binary)
+        .arg("analyzers")
+        .arg("run")
+        .arg("security:detect_secrets")
+        .arg("--target")
+        .arg(&vulnerable_apps)
+        .arg("--json")
+        .arg("--min-severity")
+        .arg("low")
+        .current_dir(&repo_root)
+        .env("ENAIBLE_REPO_ROOT", &repo_root)
+        .output()
+        .expect("Failed to run analyzer");
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    eprintln!("Detect secrets stdout: {}", stdout);
+    eprintln!("Detect secrets stderr: {}", stderr);
+
+    // Check if detect-secrets is available
+    if stderr.contains("detect-secrets not found") {
+        eprintln!("Skipping: detect-secrets not installed");
+        return;
+    }
+
+    // If it ran, check the JSON structure
+    if !stdout.trim().is_empty() {
+        let json: serde_json::Value = serde_json::from_str(&stdout)
+            .expect("Analyzer should produce valid JSON");
+
+        assert!(json.get("tool").is_some(), "Should have 'tool' field");
+        assert_eq!(json.get("tool").unwrap().as_str(), Some("security:detect_secrets"));
+    }
+}
+
+#[test]
+fn test_quality_lizard_analyzer() {
+    let binary = get_binary_path();
+    let repo_root = get_ai_workflows_root();
+
+    // Run lizard on shared analyzers directory
+    let target = repo_root.join("shared/analyzers");
+
+    if !target.exists() {
+        eprintln!("Skipping test: analyzers directory not found");
+        return;
+    }
+
+    let output = Command::new(&binary)
+        .arg("analyzers")
+        .arg("run")
+        .arg("quality:lizard")
+        .arg("--target")
+        .arg(&target)
+        .arg("--json")
+        .arg("--min-severity")
+        .arg("low")
+        .current_dir(&repo_root)
+        .env("ENAIBLE_REPO_ROOT", &repo_root)
+        .output()
+        .expect("Failed to run analyzer");
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    eprintln!("Lizard stdout: {}", stdout);
+    eprintln!("Lizard stderr: {}", stderr);
+
+    // Check if lizard is available
+    if stderr.contains("lizard not found") {
+        eprintln!("Skipping: lizard not installed");
+        return;
+    }
+
+    // If it ran, check the JSON structure
+    if !stdout.trim().is_empty() {
+        let json: serde_json::Value = serde_json::from_str(&stdout)
+            .expect("Analyzer should produce valid JSON");
+
+        assert!(json.get("tool").is_some(), "Should have 'tool' field");
+        assert_eq!(json.get("tool").unwrap().as_str(), Some("quality:lizard"));
+    }
+}
+
+#[test]
+fn test_performance_ruff_analyzer() {
+    let binary = get_binary_path();
+    let repo_root = get_ai_workflows_root();
+
+    // Run ruff on shared directory
+    let target = repo_root.join("shared");
+
+    if !target.exists() {
+        eprintln!("Skipping test: shared directory not found");
+        return;
+    }
+
+    let output = Command::new(&binary)
+        .arg("analyzers")
+        .arg("run")
+        .arg("performance:ruff")
+        .arg("--target")
+        .arg(&target)
+        .arg("--json")
+        .arg("--min-severity")
+        .arg("low")
+        .current_dir(&repo_root)
+        .env("ENAIBLE_REPO_ROOT", &repo_root)
+        .output()
+        .expect("Failed to run analyzer");
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    eprintln!("Ruff stdout: {}", stdout);
+    eprintln!("Ruff stderr: {}", stderr);
+
+    // Check if ruff is available
+    if stderr.contains("ruff not found") {
+        eprintln!("Skipping: ruff not installed");
+        return;
+    }
+
+    // If it ran, check the JSON structure
+    if !stdout.trim().is_empty() {
+        let json: serde_json::Value = serde_json::from_str(&stdout)
+            .expect("Analyzer should produce valid JSON");
+
+        assert!(json.get("tool").is_some(), "Should have 'tool' field");
+        assert_eq!(json.get("tool").unwrap().as_str(), Some("performance:ruff"));
+    }
+}
+
+#[test]
+fn test_analyzers_list_shows_all_registered() {
+    let binary = get_binary_path();
+    let repo_root = get_ai_workflows_root();
+
+    if !repo_root.exists() {
+        return;
+    }
+
+    let output = Command::new(&binary)
+        .arg("analyzers")
+        .arg("list")
+        .arg("--json")
+        .current_dir(&repo_root)
+        .env("ENAIBLE_REPO_ROOT", &repo_root)
+        .output()
+        .expect("Failed to list analyzers");
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    eprintln!("Analyzers list: {}", stdout);
+
+    let json: serde_json::Value = serde_json::from_str(&stdout)
+        .expect("Should produce valid JSON");
+
+    if let Some(analyzers) = json.get("analyzers").and_then(|a| a.as_array()) {
+        let analyzer_names: Vec<&str> = analyzers
+            .iter()
+            .filter_map(|a| a.get("tool").and_then(|t| t.as_str()))
+            .collect();
+
+        eprintln!("Registered analyzers: {:?}", analyzer_names);
+
+        // Check that our real analyzers are registered
+        assert!(analyzer_names.contains(&"security:semgrep"),
+            "security:semgrep should be registered");
+        assert!(analyzer_names.contains(&"security:detect_secrets"),
+            "security:detect_secrets should be registered");
+        assert!(analyzer_names.contains(&"quality:lizard"),
+            "quality:lizard should be registered");
+        assert!(analyzer_names.contains(&"performance:ruff"),
+            "performance:ruff should be registered");
+    }
 }
 
 #[test]

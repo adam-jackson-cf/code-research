@@ -1,4 +1,7 @@
 use crate::base::{Analyzer, AnalyzerConfig};
+use crate::security::{SemgrepAnalyzer, DetectSecretsAnalyzer};
+use crate::quality::{LizardAnalyzer, JscpdAnalyzer};
+use crate::performance::RuffAnalyzer;
 use anyhow::{anyhow, Result};
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
@@ -67,75 +70,40 @@ macro_rules! register_analyzer {
     };
 }
 
-// Example stub analyzers that would be implemented in separate modules
-pub struct SecurityAnalyzer {
-    config: AnalyzerConfig,
-}
-
-impl SecurityAnalyzer {
-    pub fn new(config: &AnalyzerConfig) -> Self {
-        Self {
-            config: config.clone(),
-        }
-    }
-}
-
-impl Analyzer for SecurityAnalyzer {
-    fn analyze(&self, target: &str) -> Result<crate::base::AnalysisResult> {
-        // Stub implementation
-        Ok(crate::base::AnalysisResult::default())
-    }
-
-    fn name(&self) -> &str {
-        "security"
-    }
-
-    fn description(&self) -> &str {
-        "Security vulnerability analyzer"
-    }
-}
-
-pub struct QualityAnalyzer {
-    config: AnalyzerConfig,
-}
-
-impl QualityAnalyzer {
-    pub fn new(config: &AnalyzerConfig) -> Self {
-        Self {
-            config: config.clone(),
-        }
-    }
-}
-
-impl Analyzer for QualityAnalyzer {
-    fn analyze(&self, target: &str) -> Result<crate::base::AnalysisResult> {
-        // Stub implementation
-        Ok(crate::base::AnalysisResult::default())
-    }
-
-    fn name(&self) -> &str {
-        "quality"
-    }
-
-    fn description(&self) -> &str {
-        "Code quality analyzer"
-    }
-}
-
-/// Bootstrap the registry with default analyzers
+/// Bootstrap the registry with all real analyzers
 pub fn bootstrap_registry() {
     let registry = AnalyzerRegistry::global();
 
-    // Register stub analyzers
+    // Security analyzers - using real external tools
     registry
-        .register("security:basic", |config| {
-            Box::new(SecurityAnalyzer::new(config))
+        .register("security:semgrep", |config| {
+            Box::new(SemgrepAnalyzer::new(config))
         })
         .ok();
 
     registry
+        .register("security:detect_secrets", |config| {
+            Box::new(DetectSecretsAnalyzer::new(config))
+        })
+        .ok();
+
+    // Quality analyzers - using real external tools
+    registry
         .register("quality:lizard", |config| {
-            Box::new(QualityAnalyzer::new(config))
+            Box::new(LizardAnalyzer::new(config))
+        })
+        .ok();
+
+    registry
+        .register("quality:jscpd", |config| {
+            Box::new(JscpdAnalyzer::new(config))
+        })
+        .ok();
+
+    // Performance analyzers - using real external tools
+    registry
+        .register("performance:ruff", |config| {
+            Box::new(RuffAnalyzer::new(config))
         })
         .ok();
 }

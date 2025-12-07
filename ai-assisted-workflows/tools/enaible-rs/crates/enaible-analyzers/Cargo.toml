@@ -16,7 +16,7 @@ glob = { workspace = true }
 regex = { workspace = true }
 chrono = { workspace = true }
 once_cell = "1.19"
+tempfile = { workspace = true }
 
 [dev-dependencies]
-tempfile = { workspace = true }
 pretty_assertions = { workspace = true }
