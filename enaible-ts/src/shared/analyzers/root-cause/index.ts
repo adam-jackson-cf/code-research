@@ -4,3 +4,4 @@
 
 export { ErrorPatternAnalyzer } from './error-patterns-analyzer.js';
 export { RecentChangesAnalyzer } from './recent-changes-analyzer.js';
+export { ExecutionTraceAnalyzer } from './trace-execution-analyzer.js';
