@@ -1,0 +1,16 @@
+{
+  "targets": [
+    {
+      "lock_hash": "c996185e9c4217bb3f623a9bb3f41754b9d6af2ee049aba4dac3e45882ff4e90",
+      "name": "backend-repo",
+      "sha": "60fe26124c7357c4745f0ecd333cc24506008488",
+      "snapshot_path": "/private/tmp/targets/backend-repo"
+    },
+    {
+      "lock_hash": "286aecb95f4fb3fbca0e0dd32713450deffad802c16f012d8a6d957a48d4f9f6",
+      "name": "ui-repo",
+      "sha": "dfebfbde86d2eadcd7a5ca94c685ea4451174514",
+      "snapshot_path": "/private/tmp/targets/ui-repo"
+    }
+  ]
+}

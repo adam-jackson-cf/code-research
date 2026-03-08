@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "workerId": "worker-alpha",
+  "role": "evidence-collector",
+  "objective": "Validate evidence coverage for research questions Q1-Q3",
+  "assignedQuestions": [
+    "Q1",
+    "Q2",
+    "Q3"
+  ],
+  "constraints": [
+    "Use primary sources only",
+    "Record citation IDs for every claim"
+  ],
+  "deliverables": [
+    "journal.jsonl",
+    "evidence-summary.json"
+  ],
+  "budgetTokens": 12000,
+  "escalationThreshold": 0.8,
+  "lockHash": "73bda959e718f2f13689702155c3a0f750ec635ff77c5ccbcfae1e42252f2510"
+}

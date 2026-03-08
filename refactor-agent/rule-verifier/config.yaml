@@ -1,0 +1,27 @@
+fixture_lane:
+  backend_fixture: /tmp/rv-smoke-backend
+  ui_fixture: /tmp/rv-smoke-ui
+matrix_lane:
+  matrix_path: config/target-matrix.yaml
+pi_foundation:
+  model: deterministic
+strongdm_policy:
+  phase_order:
+    - init_pi_foundation
+    - discover_gates
+    - bootstrap_verification
+    - map_failure_impact
+    - generate_scenario_regression
+    - iterate_refactor
+    - matrix_acceptance
+gate_discovery:
+  required_gates: [lint, type, unit, integration, visual, precommit]
+bootstrap:
+  enforce_configs: true
+risk_mapping:
+  default_risk: medium
+scenario_regression:
+  seed: 11
+refactor_loop:
+  max_iterations: 4
+  max_parallel_sessions: 2
