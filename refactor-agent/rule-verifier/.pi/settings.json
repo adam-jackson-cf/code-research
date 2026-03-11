@@ -1,6 +1,0 @@
-{
-  "model": "deterministic",
-  "prompt_template": "/Users/adamjackson/Projects/code-research/refactor-agent/rule-verifier/templates/strongdm_system_prompt.md",
-  "runtime": "pi",
-  "target_project_path": "/private/var/folders/mm/8xs8r41n60bg449p69zmmy3h0000gn/T/pytest-of-adamjackson/pytest-876/test_harness_lifecycle_end_to_0/targets/backend-repo"
-}
